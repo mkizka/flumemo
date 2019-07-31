@@ -24,8 +24,15 @@ class _MyHomePageState extends State<MyHomePage> {
   Line currentLine = Line([], Colors.black);
   List<Line> lines = [];
 
-  String _debug = 'DEBUG';
+  List<String> _logs = [];
   bool isDebug = true;
+
+  List<Widget> createTextList(List<String> logs, {int lineCount: 15}) {
+    if (logs.length > lineCount) {
+      logs = logs.sublist(logs.length - lineCount, logs.length);
+    }
+    return logs.map((String log) => Text(log)).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,29 +46,43 @@ class _MyHomePageState extends State<MyHomePage> {
     );
 
     return Scaffold(
-      appBar: isDebug ? AppBar(title: Text(_debug)) : null,
-      body: GestureDetector(
-        onPanUpdate: (DragUpdateDetails details) {
-          setState(() {
-            RenderBox box = context.findRenderObject();
-            Offset point = box.globalToLocal(details.globalPosition);
-            point = point.translate(0.0, -(AppBar().preferredSize.height));
-
-            currentLine.points.add(point);
-          });
-        },
-        onPanEnd: (DragEndDetails details) {
-          lines.add(currentLine);
-          currentLine = Line([], Colors.black);
-        },
-        child: sketchArea,
+      body: Stack(
+        children: [
+          GestureDetector(
+            onPanUpdate: (DragUpdateDetails details) {
+              setState(() {
+                RenderBox box = context.findRenderObject();
+                Offset point = box.globalToLocal(details.globalPosition);
+                currentLine.points.add(point);
+                _logs.add('onPanUpdate');
+              });
+            },
+            onPanEnd: (DragEndDetails details) {
+              if (currentLine.points.length >= 1) {
+                lines.add(currentLine);
+                currentLine = Line([], Colors.black);
+              }
+              _logs.add('onPanEnd');
+            },
+            child: sketchArea,
+          ),
+          Container(
+            alignment: Alignment.bottomLeft,
+            child: Column(
+              children: createTextList(_logs),
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         tooltip: 'clear Screen',
         backgroundColor: Colors.red,
         child: Icon(Icons.refresh),
         onPressed: () {
-          setState(() => lines.clear());
+          setState(() {
+            lines.clear();
+            _logs.add('clear');
+          });
         },
       ),
     );
