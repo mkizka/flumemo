@@ -21,7 +21,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<Offset> points = <Offset>[];
+  Line currentLine = Line([], Colors.black);
+  List<Line> lines = [];
+
+  String _debug = 'DEBUG';
+  bool isDebug = true;
 
   @override
   Widget build(BuildContext context) {
@@ -30,14 +34,12 @@ class _MyHomePageState extends State<MyHomePage> {
       alignment: Alignment.topLeft,
       color: Colors.blueGrey[50],
       child: CustomPaint(
-        painter: Sketcher(points),
+        painter: Sketcher(List.from(lines)..add(currentLine)),
       ),
     );
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Sketcher'),
-      ),
+      appBar: isDebug ? AppBar(title: Text(_debug)) : null,
       body: GestureDetector(
         onPanUpdate: (DragUpdateDetails details) {
           setState(() {
@@ -45,8 +47,12 @@ class _MyHomePageState extends State<MyHomePage> {
             Offset point = box.globalToLocal(details.globalPosition);
             point = point.translate(0.0, -(AppBar().preferredSize.height));
 
-            points = List.from(points)..add(point);
+            currentLine.points.add(point);
           });
+        },
+        onPanEnd: (DragEndDetails details) {
+          lines.add(currentLine);
+          currentLine = Line([], Colors.black);
         },
         child: sketchArea,
       ),
@@ -55,21 +61,28 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.red,
         child: Icon(Icons.refresh),
         onPressed: () {
-          setState(() => points.clear());
+          setState(() => lines.clear());
         },
       ),
     );
   }
 }
 
-class Sketcher extends CustomPainter {
-  final List<Offset> points;
+class Line {
+  List<Offset> points;
+  Color color;
 
-  Sketcher(this.points);
+  Line(this.points, this.color);
+}
+
+class Sketcher extends CustomPainter {
+  final List<Line> lines;
+
+  Sketcher(this.lines);
 
   @override
   bool shouldRepaint(Sketcher oldDelegate) {
-    return oldDelegate.points != points;
+    return oldDelegate.lines != lines;
   }
 
   void paint(Canvas canvas, Size size) {
@@ -78,10 +91,10 @@ class Sketcher extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..strokeWidth = 4.0;
 
-    for (int i = 0; i < points.length - 1; i++) {
-      if (points[i] != null && points[i + 1] != null) {
-        canvas.drawLine(points[i], points[i + 1], paint);
+    lines.forEach((Line line) {
+      for (int i = 0; i < line.points.length - 1; i++) {
+        canvas.drawLine(line.points[i], line.points[i + 1], paint);
       }
-    }
+    });
   }
 }
