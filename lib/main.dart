@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import './draw.dart';
 
 void main() => runApp(MyApp());
 
@@ -20,12 +21,14 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
+List<String> _logs = [];
+bool isDebug = true;
+
 class _MyHomePageState extends State<MyHomePage> {
+  Note note = Note();
+
   Line currentLine = Line([], Colors.black);
   List<Line> lines = [];
-
-  List<String> _logs = [];
-  bool isDebug = true;
 
   List<Widget> createTextList(List<String> logs, {int lineCount: 15}) {
     if (logs.length > lineCount) {
@@ -72,50 +75,46 @@ class _MyHomePageState extends State<MyHomePage> {
               children: createTextList(_logs),
             ),
           ),
+          Container(
+            alignment: Alignment.bottomRight,
+            padding: EdgeInsets.all(15),
+            child: Row(
+              children: [
+                FloatingActionButton(
+                  backgroundColor: Colors.red,
+                  child: Icon(Icons.refresh),
+                  onPressed: () {
+                    setState(() {
+                      lines.clear();
+                      _logs.add('clear');
+                    });
+                  },
+                ),
+                FloatingActionButton(
+                  backgroundColor: Colors.red,
+                  child: Icon(Icons.arrow_left),
+                  onPressed: () {
+                    setState(() {
+                      note.backPage();
+                      _logs.add('clear');
+                    });
+                  },
+                ),
+                FloatingActionButton(
+                  backgroundColor: Colors.red,
+                  child: Icon(Icons.arrow_right),
+                  onPressed: () {
+                    setState(() {
+                      note.pushPage();
+                      _logs.add('clear');
+                    });
+                  },
+                )
+              ],
+            ),
+          )
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        tooltip: 'clear Screen',
-        backgroundColor: Colors.red,
-        child: Icon(Icons.refresh),
-        onPressed: () {
-          setState(() {
-            lines.clear();
-            _logs.add('clear');
-          });
-        },
-      ),
     );
-  }
-}
-
-class Line {
-  List<Offset> points;
-  Color color;
-
-  Line(this.points, this.color);
-}
-
-class Sketcher extends CustomPainter {
-  final List<Line> lines;
-
-  Sketcher(this.lines);
-
-  @override
-  bool shouldRepaint(Sketcher oldDelegate) {
-    return oldDelegate.lines != lines;
-  }
-
-  void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()
-      ..color = Colors.black
-      ..strokeCap = StrokeCap.round
-      ..strokeWidth = 4.0;
-
-    lines.forEach((Line line) {
-      for (int i = 0; i < line.points.length - 1; i++) {
-        canvas.drawLine(line.points[i], line.points[i + 1], paint);
-      }
-    });
   }
 }
