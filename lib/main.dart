@@ -25,10 +25,6 @@ List<String> _logs = [];
 bool isDebug = true;
 
 class _MyHomePageState extends State<MyHomePage> {
-  Note note = Note();
-
-  Line currentLine = Line([], Colors.black);
-  List<Line> lines = [];
 
   List<Widget> createTextList(List<String> logs, {int lineCount: 15}) {
     if (logs.length > lineCount) {
@@ -39,36 +35,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final Container sketchArea = Container(
-      margin: EdgeInsets.all(1.0),
-      alignment: Alignment.topLeft,
-      color: Colors.blueGrey[50],
-      child: CustomPaint(
-        painter: Sketcher(List.from(lines)..add(currentLine)),
-      ),
-    );
+    Widget note = Note();
 
     return Scaffold(
       body: Stack(
         children: [
-          GestureDetector(
-            onPanUpdate: (DragUpdateDetails details) {
-              setState(() {
-                RenderBox box = context.findRenderObject();
-                Offset point = box.globalToLocal(details.globalPosition);
-                currentLine.points.add(point);
-                _logs.add('onPanUpdate');
-              });
-            },
-            onPanEnd: (DragEndDetails details) {
-              if (currentLine.points.length >= 1) {
-                lines.add(currentLine);
-                currentLine = Line([], Colors.black);
-              }
-              _logs.add('onPanEnd');
-            },
-            child: sketchArea,
-          ),
+          note,
           Container(
             alignment: Alignment.bottomLeft,
             child: Column(
@@ -80,12 +52,12 @@ class _MyHomePageState extends State<MyHomePage> {
             padding: EdgeInsets.all(15),
             child: Row(
               children: [
-                FloatingActionButton(
+/*                FloatingActionButton(
                   backgroundColor: Colors.red,
                   child: Icon(Icons.refresh),
                   onPressed: () {
                     setState(() {
-                      lines.clear();
+                      note.currentPage.lines.clear();
                       _logs.add('clear');
                     });
                   },
@@ -109,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       _logs.add('clear');
                     });
                   },
-                )
+                )*/
               ],
             ),
           )
