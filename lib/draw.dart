@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 
 class Note extends StatefulWidget {
-  final int page;
-
-  Note({this.page});
-
   @override
   _NoteState createState() => _NoteState();
 }
 
 class _NoteState extends State<Note> {
-  final NoteController _controller = NoteController();
+  NoteController _controller = NoteController();
 
   @override
   Widget build(BuildContext context) {
@@ -23,38 +19,91 @@ class _NoteState extends State<Note> {
       ),
     );
 
-    return GestureDetector(
-      onPanUpdate: (DragUpdateDetails details) {
-        setState(() {
-          RenderBox box = context.findRenderObject();
-          Offset point = box.globalToLocal(details.globalPosition);
-          _controller.currentPage.currentLine.points.add(point);
-        });
-      },
-      onPanEnd: (DragEndDetails details) {
-        _controller.currentPage.mergeLines();
-      },
-      child: sketchArea,
+    return Stack(
+      children: <Widget>[
+        GestureDetector(
+          onPanUpdate: (DragUpdateDetails details) {
+            setState(() {
+              RenderBox box = context.findRenderObject();
+              Offset point = box.globalToLocal(details.globalPosition);
+              _controller.currentPage.currentLine.points.add(point);
+            });
+          },
+          onPanEnd: (DragEndDetails details) {
+            _controller.currentPage.mergeLines();
+          },
+          child: sketchArea,
+        ),
+        Container(
+          alignment: Alignment.bottomRight,
+          padding: EdgeInsets.all(15),
+          child: Row(
+            children: [
+              FloatingActionButton(
+                backgroundColor: Colors.red,
+                child: Icon(Icons.refresh),
+                onPressed: () {
+                  setState(() {
+                    _controller.currentPage.lines.clear();
+                  });
+                },
+              ),
+              FloatingActionButton(
+                backgroundColor: Colors.red,
+                child: Icon(Icons.arrow_left),
+                onPressed: () {
+                  setState(() {
+                    _controller.backPage();
+                  });
+                },
+              ),
+              FloatingActionButton(
+                backgroundColor: Colors.red,
+                child: Icon(Icons.arrow_right),
+                onPressed: () {
+                  setState(() {
+                    _controller.pushPage();
+                  });
+                },
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
 
 class NoteController {
   List<Page> pages;
-  int pageNumber;
+  int pageIndex;
 
-  NoteController({this.pageNumber: 0}) {
+  NoteController({this.pageIndex: 0}) {
     pages = [Page(lines: [])];
   }
 
+  void pushPage() {
+    pageIndex++;
+    print(pageIndex);
+    if (pageIndex >= pages.length) {
+      pages.add(Page(lines: []));
+      print(pages);
+    }
+  }
+
+  void backPage() {
+    if (pageIndex > 0) pageIndex--;
+    print(pageIndex);
+  }
+
   Page get currentPage {
-    return pages[pageNumber];
+    return pages[pageIndex];
   }
 }
 
 class Page {
   Line currentLine = Line([], Colors.black);
-  List<Line> lines;
+  List<Line> lines = [];
 
   Page({this.lines});
 
