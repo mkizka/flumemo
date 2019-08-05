@@ -24,6 +24,12 @@ class _NoteState extends State<Note> {
       ),
     );
 
+    final _displayStyle = TextStyle(
+      color: Colors.black,
+      fontSize: 24,
+      fontWeight: FontWeight.bold,
+    );
+
     return Stack(
       children: <Widget>[
         GestureDetector(
@@ -38,6 +44,22 @@ class _NoteState extends State<Note> {
             _controller.currentPage.mergeLines();
           },
           child: sketchArea,
+        ),
+        Container(
+          alignment: Alignment.topLeft,
+          padding: EdgeInsets.fromLTRB(15, 30, 15, 30),
+          child: Column(
+            children: [
+              Text(
+                _controller.getPageStateDisplay(),
+                style: _displayStyle,
+              ),
+              Text(
+                _controller.fps.toString() + 'fps',
+                style: _displayStyle,
+              ),
+            ],
+          ),
         ),
         Container(
           alignment: Alignment.bottomRight,
@@ -131,6 +153,10 @@ class NoteController {
 
   Page get currentPage {
     return pages[pageIndex];
+  }
+
+  String getPageStateDisplay() {
+    return (pageIndex + 1).toString() + '/' + pages.length.toString();
   }
 }
 
