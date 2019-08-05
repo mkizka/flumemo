@@ -112,7 +112,7 @@ class _NoteState extends State<Note> {
                 child: Icon(Icons.arrow_right),
                 onPressed: () {
                   setState(() {
-                    _controller.pushPage();
+                    _controller.pushPageAndCreate();
                   });
                 },
               ),
@@ -132,15 +132,20 @@ class NoteController {
 
   NoteController({this.pages, this.pageIndex, this.fps});
 
-  void pushPageAndLoop() async {
+  void _pushPage() {
+    currentPage.mergeLines();
     pageIndex++;
+  }
+
+  void pushPageAndLoop() {
+    _pushPage();
     if (pageIndex >= pages.length) {
       pageIndex = 0;
     }
   }
 
-  void pushPage() {
-    pageIndex++;
+  void pushPageAndCreate() {
+    _pushPage();
     if (pageIndex >= pages.length) {
       pages.add(Page(lines: []));
     }
@@ -148,7 +153,6 @@ class NoteController {
 
   void backPage() {
     if (pageIndex > 0) pageIndex--;
-    print(pageIndex);
   }
 
   Page get currentPage {
