@@ -159,6 +159,10 @@ class NoteController {
     return pages[pageIndex];
   }
 
+  Page get prevPage {
+    return pages[pageIndex - 1];
+  }
+
   String getPageStateDisplay() {
     return (pageIndex + 1).toString() + '/' + pages.length.toString();
   }
@@ -203,17 +207,29 @@ class Sketcher extends CustomPainter {
     return true;
   }
 
-  void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()
-      ..color = Colors.black
-      ..strokeCap = StrokeCap.round
-      ..strokeWidth = 4.0;
-
-    List<Line> lines = _controller.currentPage.getAllLines();
+  void _drawLines(Canvas canvas, Paint paint, List<Line> lines) {
     lines.forEach((Line line) {
       for (int i = 0; i < line.points.length - 1; i++) {
         canvas.drawLine(line.points[i], line.points[i + 1], paint);
       }
     });
+  }
+
+  void paint(Canvas canvas, Size size) {
+    if (_controller.pageIndex >= 1) {
+      Paint onionPaint = Paint()
+        ..color = Colors.grey
+        ..strokeCap = StrokeCap.round
+        ..strokeWidth = 4.0;
+
+      _drawLines(canvas, onionPaint, _controller.prevPage.getAllLines());
+    }
+
+    Paint paint = Paint()
+      ..color = Colors.black
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = 4.0;
+
+    _drawLines(canvas, paint, _controller.currentPage.getAllLines());
   }
 }
