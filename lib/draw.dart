@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 class Note extends StatefulWidget {
@@ -6,7 +7,11 @@ class Note extends StatefulWidget {
 }
 
 class _NoteState extends State<Note> {
-  NoteController _controller = NoteController();
+  NoteController _controller = NoteController(
+    pages: [Page(lines: [])],
+    pageIndex: 0,
+    fps: 4,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +64,29 @@ class _NoteState extends State<Note> {
               ),
               FloatingActionButton(
                 backgroundColor: Colors.red,
+                child:
+                    Icon(_controller.isPlaying ? Icons.stop : Icons.play_arrow),
+                onPressed: () {
+                  setState(() {
+                    _controller.isPlaying = !_controller.isPlaying;
+                  });
+                  if (_controller.isPlaying) {
+                    Timer.periodic(
+                      Duration(milliseconds: 1000 ~/ _controller.fps),
+                      (Timer timer) {
+                        if (!_controller.isPlaying) {
+                          timer.cancel();
+                        }
+                        setState(() {
+                          _controller.pushPageAndLoop();
+                        });
+                      },
+                    );
+                  }
+                },
+              ),
+              FloatingActionButton(
+                backgroundColor: Colors.red,
                 child: Icon(Icons.arrow_right),
                 onPressed: () {
                   setState(() {
@@ -77,17 +105,22 @@ class _NoteState extends State<Note> {
 class NoteController {
   List<Page> pages;
   int pageIndex;
+  int fps;
+  bool isPlaying = false;
 
-  NoteController({this.pageIndex: 0}) {
-    pages = [Page(lines: [])];
+  NoteController({this.pages, this.pageIndex, this.fps});
+
+  void pushPageAndLoop() async {
+    pageIndex++;
+    if (pageIndex >= pages.length) {
+      pageIndex = 0;
+    }
   }
 
   void pushPage() {
     pageIndex++;
-    print(pageIndex);
     if (pageIndex >= pages.length) {
       pages.add(Page(lines: []));
-      print(pages);
     }
   }
 
