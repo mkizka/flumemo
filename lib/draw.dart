@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import './menu.dart';
 
 class Note extends StatefulWidget {
   @override
@@ -67,6 +68,7 @@ class _NoteState extends State<Note> {
           child: Row(
             children: [
               FloatingActionButton(
+                heroTag: 'clear',
                 backgroundColor: Colors.red,
                 child: Icon(Icons.refresh),
                 onPressed: () {
@@ -76,6 +78,7 @@ class _NoteState extends State<Note> {
                 },
               ),
               FloatingActionButton(
+                heroTag: 'left',
                 backgroundColor: Colors.red,
                 child: Icon(Icons.arrow_left),
                 onPressed: () {
@@ -85,6 +88,7 @@ class _NoteState extends State<Note> {
                 },
               ),
               FloatingActionButton(
+                heroTag: 'play',
                 backgroundColor: Colors.red,
                 child:
                     Icon(_controller.isPlaying ? Icons.stop : Icons.play_arrow),
@@ -108,12 +112,24 @@ class _NoteState extends State<Note> {
                 },
               ),
               FloatingActionButton(
+                heroTag: 'right',
                 backgroundColor: Colors.red,
                 child: Icon(Icons.arrow_right),
                 onPressed: () {
                   setState(() {
                     _controller.pushPageAndCreate();
                   });
+                },
+              ),
+              FloatingActionButton(
+                heroTag: 'menu',
+                backgroundColor: Colors.red,
+                child: Icon(Icons.menu),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Menu()),
+                  );
                 },
               ),
             ],
