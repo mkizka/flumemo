@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         home: SafeArea(
-          child: EditScreen(),
+          child: EditScene(),
         ),
       ),
     );
