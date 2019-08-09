@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import './config.dart';
 
 class Menu extends StatefulWidget {
   @override
@@ -7,24 +7,13 @@ class Menu extends StatefulWidget {
 }
 
 class _MenuState extends State<Menu> {
-  SharedPreferences _prefs;
-  bool isSwitched = false;
 
-  _MenuState() {
-    _getPrefs().then((SharedPreferences prefs) {
-      setState(() {
-        isSwitched = prefs.getBool('isSwitched');
-      });
-      _prefs = prefs;
+  @override
+  void initState() {
+    config.init().then((Config config) {
+      setState(() {});
     });
-  }
-
-  Future<SharedPreferences> _getPrefs() async {
-    return await SharedPreferences.getInstance();
-  }
-
-  void _save() async {
-    _prefs.setBool('isSwitched', isSwitched);
+    super.initState();
   }
 
   @override
@@ -35,18 +24,25 @@ class _MenuState extends State<Menu> {
       ),
       body: Container(
         padding: EdgeInsets.all(10),
-        child: Center(
-          child: Switch(
-            value: isSwitched,
-            onChanged: (value) {
-              setState(() {
-                isSwitched = value;
-                _save();
-              });
-            },
-            activeTrackColor: Colors.lightGreenAccent,
-            activeColor: Colors.green,
-          ),
+        child: Column(
+          children: <Widget>[
+            Text('ペンの太さ'),
+            Slider(
+              label: config.strokeWidth.toString(),
+              min: 1,
+              max: 10,
+              activeColor: Colors.orange,
+              inactiveColor: Colors.blueAccent,
+              divisions: 9,
+              value: config.strokeWidth,
+              onChanged: (double value) {
+                setState(() {
+                  config.strokeWidth = value;
+                  config.save();
+                });
+              },
+            ),
+          ],
         ),
       ),
     );
