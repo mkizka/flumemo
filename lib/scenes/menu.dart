@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/pen.dart';
+import '../models/config.dart';
 
 class MenuScene extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    ConfigModel _config = Provider.of<ConfigModel>(context);
     PenModel _pen = Provider.of<PenModel>(context);
 
     return SafeArea(
@@ -22,12 +24,19 @@ class MenuScene extends StatelessWidget {
                 label: _pen.width.toString(),
                 min: 1,
                 max: 10,
-                activeColor: Colors.orange,
-                inactiveColor: Colors.blueAccent,
                 divisions: 9,
                 value: _pen.width,
                 onChanged: (double value) => _pen.width = value,
               ),
+              Text('透過枚数'),
+              Slider(
+                label: _config.onionRange.toString(),
+                min: 0,
+                max: 3,
+                divisions: 3,
+                value: _config.onionRange,
+                onChanged: (double value) => _config.onionRange = value
+              )
             ],
           ),
         ),

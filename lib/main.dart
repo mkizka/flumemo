@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'models/pen.dart';
 import 'models/note.dart';
+import 'models/config.dart';
 import 'scenes/edit.dart';
 import 'scenes/menu.dart';
 
@@ -18,6 +19,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           builder: (BuildContext context) => PenModel(),
+        ),
+        ChangeNotifierProvider(
+          builder: (BuildContext context) => ConfigModel(),
         ),
       ],
       child: MaterialApp(
