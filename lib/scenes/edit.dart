@@ -9,11 +9,33 @@ class EditScene extends StatelessWidget {
   Widget build(BuildContext context) {
     final NoteModel _note = Provider.of<NoteModel>(context);
 
+    final _displayStyle = TextStyle(
+      color: Colors.black,
+      fontSize: 24,
+      fontWeight: FontWeight.bold,
+    );
+
     return SafeArea(
       child: Scaffold(
         body: Stack(
           children: <Widget>[
             Sketcher(),
+            Container(
+              alignment: Alignment.topLeft,
+              padding: EdgeInsets.fromLTRB(15, 30, 15, 30),
+              child: Column(
+                children: [
+                  Text(
+                    _note.pageStateDisplay,
+                    style: _displayStyle,
+                  ),
+                  Text(
+                    _note.fps.toString() + 'fps',
+                    style: _displayStyle,
+                  ),
+                ],
+              ),
+            ),
             Container(
               alignment: Alignment.bottomRight,
               padding: EdgeInsets.all(15),

@@ -64,6 +64,10 @@ class NoteModel extends ChangeNotifier {
     currentPage.updateLine(point);
     notifyListeners();
   }
+
+  String get pageStateDisplay {
+    return (pageIndex + 1).toString() + '/' + pageLength.toString();
+  }
 }
 
 class Page {
