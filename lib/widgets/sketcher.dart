@@ -13,15 +13,21 @@ class Sketcher extends StatelessWidget {
     final _note = Provider.of<NoteModel>(context);
     final _pen = Provider.of<PenModel>(context);
 
+    Offset _getPointerPosition(PointerEvent details) {
+      RenderBox box = context.findRenderObject();
+      Offset point = box.globalToLocal(details.position);
+      return point;
+    }
+
     return Listener(
       onPointerDown: (details) {
-        _note.addLine(_pen, details.position);
+        _note.addLine(_pen, _getPointerPosition(details));
       },
       onPointerMove: (details) {
-        _note.updateLine(details.position);
+        _note.updateLine(_getPointerPosition(details));
       },
       onPointerUp: (details) {
-        _note.updateLine(details.position);
+        _note.updateLine(_getPointerPosition(details));
       },
       child: CustomPaint(
         painter: _Painter(_note),
