@@ -9,70 +9,86 @@ class EditScene extends StatelessWidget {
   Widget build(BuildContext context) {
     final NoteModel _note = Provider.of<NoteModel>(context);
 
-    final _displayStyle = TextStyle(
-      color: Colors.black,
-      fontSize: 24,
-      fontWeight: FontWeight.bold,
-    );
-
     return SafeArea(
       child: Scaffold(
-        body: Stack(
+        body: Column(
           children: <Widget>[
-            Sketcher(),
-            Container(
-              alignment: Alignment.topLeft,
-              padding: EdgeInsets.fromLTRB(15, 30, 15, 30),
-              child: Column(
+            ButtonTheme(
+              height: 50,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.zero,
+              ),
+              buttonColor: Colors.grey,
+              child: Row(
                 children: [
-                  Text(
-                    _note.pageStateDisplay,
-                    style: _displayStyle,
+                  Expanded(
+                    child: RaisedButton(
+                      child: Icon(Icons.layers),
+                      onPressed: () {},
+                    ),
                   ),
-                  Text(
-                    _note.fps.toString() + 'fps',
-                    style: _displayStyle,
+                  Expanded(
+                    child: RaisedButton(
+                      child: Text(
+                        _note.pageStateDisplay,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: RaisedButton(
+                      child: Icon(Icons.cloud_upload),
+                      onPressed: () {},
+                    ),
                   ),
                 ],
               ),
             ),
-            Container(
-              alignment: Alignment.bottomRight,
-              padding: EdgeInsets.all(15),
+            Expanded(
+              child: Sketcher(),
+            ),
+            ButtonTheme(
+              height: 60,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.zero,
+              ),
+              buttonColor: Colors.grey,
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  FloatingActionButton(
-                    heroTag: 'clear',
-                    backgroundColor: Colors.red,
-                    child: Icon(Icons.refresh),
-                    onPressed: () {
-                      _note.currentPage.lines.clear();
-                    },
+                  Expanded(
+                    child: RaisedButton(
+                      child: Icon(Icons.undo),
+                      onPressed: () => _note.currentPage.lines.removeLast(),
+                    ),
                   ),
-                  FloatingActionButton(
-                    heroTag: 'left',
-                    backgroundColor: Colors.red,
-                    child: Icon(Icons.arrow_left),
-                    onPressed: () => _note.backPage(),
+                  Expanded(
+                    child: RaisedButton(
+                      child: Icon(Icons.arrow_left),
+                      onPressed: () => _note.backPage(),
+                    ),
                   ),
-                  FloatingActionButton(
-                    heroTag: 'play',
-                    backgroundColor: Colors.red,
-                    child:
-                        Icon(_note.isPlaying ? Icons.stop : Icons.play_arrow),
-                    onPressed: () => _note.play(),
+                  Expanded(
+                    child: RaisedButton(
+                      child:
+                          Icon(_note.isPlaying ? Icons.stop : Icons.play_arrow),
+                      onPressed: () => _note.play(),
+                    ),
                   ),
-                  FloatingActionButton(
-                    heroTag: 'right',
-                    backgroundColor: Colors.red,
-                    child: Icon(Icons.arrow_right),
-                    onPressed: () => _note.pushPageAndCreate(),
+                  Expanded(
+                    child: RaisedButton(
+                      child: Icon(Icons.arrow_right),
+                      onPressed: () => _note.pushPageAndCreate(),
+                    ),
                   ),
-                  FloatingActionButton(
-                    heroTag: 'menu',
-                    backgroundColor: Colors.red,
-                    child: Icon(Icons.menu),
-                    onPressed: () => Navigator.pushNamed(context, '/menu'),
+                  Expanded(
+                    child: RaisedButton(
+                      child: Icon(Icons.menu),
+                      onPressed: () => Navigator.pushNamed(context, '/menu'),
+                    ),
                   ),
                 ],
               ),
