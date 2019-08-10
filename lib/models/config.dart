@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ConfigModel extends ChangeNotifier {
   SharedPreferences prefs;
+  bool isReady = false;
 
   get onionRange => prefs.getDouble('onionRange') ?? 1.0;
 
@@ -12,6 +13,10 @@ class ConfigModel extends ChangeNotifier {
   }
 
   ConfigModel() {
-    SharedPreferences.getInstance().then((instance) => prefs = instance);
+    SharedPreferences.getInstance().then((instance) {
+      prefs = instance;
+      isReady = true;
+      notifyListeners();
+    });
   }
 }

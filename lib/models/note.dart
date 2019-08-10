@@ -1,5 +1,8 @@
 import 'dart:async';
+
 import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
+
 import './pen.dart';
 
 class NoteModel extends ChangeNotifier {
@@ -46,9 +49,11 @@ class NoteModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Page get currentPage {
-    return _pages[pageIndex];
-  }
+  Page getRelativePage(int i) => _pages[pageIndex + i];
+
+  Page get currentPage => getRelativePage(0);
+
+  int get pageLength => _pages.length;
 
   void addLine(PenModel pen, Offset point) {
     currentPage.addLine(pen, point);
@@ -76,6 +81,19 @@ class Page {
 class Line {
   List<Offset> points = [];
   Paint paint;
+  List<Color> _onionColors = [
+    Colors.grey,
+    Colors.grey.shade400,
+    Colors.grey.shade300,
+  ];
 
   Line(this.paint);
+
+  getOnionPaint(int onionIndex) {
+    int index = -(onionIndex + 1);
+    return Paint()
+      ..strokeWidth = paint.strokeWidth
+      ..strokeCap = paint.strokeCap
+      ..color = _onionColors[index];
+  }
 }

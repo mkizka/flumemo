@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../models/note.dart';
 import '../models/pen.dart';
+import '../models/config.dart';
 
 class Sketcher extends StatelessWidget {
   @override
@@ -30,7 +31,7 @@ class Sketcher extends StatelessWidget {
         _note.updateLine(_getPointerPosition(details));
       },
       child: CustomPaint(
-        painter: _Painter(_note),
+        painter: _Painter(context, _note),
         child: ConstrainedBox(
           constraints: BoxConstraints.expand(),
         ),
@@ -41,8 +42,10 @@ class Sketcher extends StatelessWidget {
 
 class _Painter extends CustomPainter {
   final NoteModel _note;
+  final BuildContext _context;
+  ConfigModel _config;
 
-  _Painter(this._note);
+  _Painter(this._context, this._note);
 
   @override
   bool shouldRepaint(_Painter oldDelegate) {
@@ -50,6 +53,26 @@ class _Painter extends CustomPainter {
   }
 
   void paint(Canvas canvas, Size size) {
+    _config = Provider.of<ConfigModel>(_context);
+    if (_config.isReady && !_note.isPlaying) {
+      List<int> onionIndexList = List.generate(
+        _config.onionRange.toInt(),
+        (int i) => -(i + 1),
+      );
+
+      onionIndexList.reversed.forEach((int onionIndex) {
+        if (_note.pageIndex + onionIndex < 0) return;
+
+        _note.getRelativePage(onionIndex).lines.forEach((Line line) {
+          canvas.drawPoints(
+            PointMode.polygon,
+            line.points,
+            line.getOnionPaint(onionIndex),
+          );
+        });
+      });
+    }
+
     _note.currentPage.lines.forEach((Line line) {
       canvas.drawPoints(PointMode.polygon, line.points, line.paint);
     });
