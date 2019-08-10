@@ -65,7 +65,7 @@ class Page {
   List<Line> lines = [];
 
   void addLine(PenModel pen, Offset point) {
-    lines.add(Line(pen)..points.add(point));
+    lines.add(Line(pen.paint)..points.add(point));
   }
 
   void updateLine(Offset point) {
@@ -75,7 +75,7 @@ class Page {
 
 class Line {
   List<Offset> points = [];
-  PenModel pen;
+  Paint paint;
 
-  Line(this.pen);
+  Line(this.paint);
 }

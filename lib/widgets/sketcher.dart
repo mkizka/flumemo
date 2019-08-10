@@ -45,7 +45,7 @@ class _Painter extends CustomPainter {
 
   void paint(Canvas canvas, Size size) {
     _note.currentPage.lines.forEach((Line line) {
-      canvas.drawPoints(PointMode.polygon, line.points, line.pen.paint);
+      canvas.drawPoints(PointMode.polygon, line.points, line.paint);
     });
   }
 }

@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'models/pen.dart';
 import 'models/note.dart';
 import 'scenes/edit.dart';
+import 'scenes/menu.dart';
 
 void main() => runApp(MyApp());
 
@@ -20,9 +21,11 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
-        home: SafeArea(
-          child: EditScene(),
-        ),
+        initialRoute: '/',
+        routes: {
+          '/': (BuildContext context) => EditScene(),
+          '/menu': (BuildContext context) => MenuScene()
+        },
       ),
     );
   }
