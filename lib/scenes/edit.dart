@@ -33,6 +33,12 @@ class EditScene extends StatelessWidget {
                   onPressed: () => _note.backPage(),
                 ),
                 FloatingActionButton(
+                  heroTag: 'play',
+                  backgroundColor: Colors.red,
+                  child: Icon(_note.isPlaying ? Icons.stop : Icons.play_arrow),
+                  onPressed: () => _note.play(),
+                ),
+                FloatingActionButton(
                   heroTag: 'right',
                   backgroundColor: Colors.red,
                   child: Icon(Icons.arrow_right),

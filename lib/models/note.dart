@@ -1,9 +1,29 @@
+import 'dart:async';
 import 'package:flutter/widgets.dart';
 import './pen.dart';
 
 class NoteModel extends ChangeNotifier {
   List<Page> _pages = [Page()];
   int pageIndex = 0;
+  bool isPlaying = false;
+  double fps = 12;
+
+  void play() {
+    isPlaying = !isPlaying;
+    notifyListeners();
+    if (isPlaying) {
+      Timer.periodic(
+        Duration(milliseconds: 1000 ~/ fps),
+        (Timer timer) {
+          if (!isPlaying) {
+            timer.cancel();
+          }
+          pushPageAndLoop();
+          notifyListeners();
+        },
+      );
+    }
+  }
 
   void pushPageAndLoop() {
     pageIndex++;
