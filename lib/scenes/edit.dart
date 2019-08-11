@@ -1,5 +1,9 @@
+import 'dart:ui';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:image_picker_saver/image_picker_saver.dart';
 
 import '../models/note.dart';
 import '../widgets/sketcher.dart';
@@ -41,7 +45,24 @@ class EditScene extends StatelessWidget {
                   Expanded(
                     child: RaisedButton(
                       child: Icon(Icons.cloud_upload),
-                      onPressed: () {},
+                      onPressed: () {
+                        PictureRecorder recorder = PictureRecorder();
+                        Canvas canvas = Canvas(recorder);
+                        _note.currentPage.lines.forEach((Line line) {
+                          canvas.drawPoints(PointMode.polygon, line.points, line.paint);
+                        });
+                        print(_note.currentPage.lines.map((i) => i.points.map((j) => [j.dx, j.dy]).toList()).toList());
+                        Picture picture = recorder.endRecording();
+                        print(context.size.width.toInt());
+                        print(context.size.height.toInt());
+                        picture.toImage(context.size.width.toInt(), context.size.height.toInt()).then((image) {
+                          image.toByteData(format: ImageByteFormat.png).then((data) {
+                            ImagePickerSaver.saveFile(fileData: data.buffer.asUint8List()).then((f) {
+                              print(File.fromUri(Uri.file(f)));
+                            });
+                          });
+                        });
+                      },
                     ),
                   ),
                 ],
