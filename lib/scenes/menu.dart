@@ -36,8 +36,8 @@ class MenuScene extends StatelessWidget {
                 min: 0,
                 max: 3,
                 divisions: 3,
-                value: _config.onionRange,
-                onChanged: (double value) => _config.onionRange = value,
+                value: _config.onionRange.toDouble(),
+                onChanged: (double value) => _config.onionRange = value.toInt(),
               ),
               Text('fps'),
               Slider(

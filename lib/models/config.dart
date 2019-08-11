@@ -6,10 +6,10 @@ class ConfigModel extends ChangeNotifier {
   SharedPreferences prefs;
   bool isReady = false;
 
-  get onionRange => prefs.getDouble('onionRange') ?? 1.0;
+  int get onionRange => prefs.getInt('onionRange') ?? 1;
 
-  set onionRange(double value) {
-    prefs.setDouble('onionRange', value).then((_) => notifyListeners());
+  set onionRange(int value) {
+    prefs.setInt('onionRange', value).then((_) => notifyListeners());
   }
 
   ConfigModel() {

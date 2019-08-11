@@ -56,7 +56,7 @@ class _Painter extends CustomPainter {
     _config = Provider.of<ConfigModel>(_context);
     if (_config.isReady && !_note.isPlaying) {
       List<int> onionIndexList = List.generate(
-        _config.onionRange.toInt(),
+        _config.onionRange,
         (int i) => -(i + 1),
       );
 
