@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/pen.dart';
+import '../models/note.dart';
 import '../models/config.dart';
 
 class MenuScene extends StatelessWidget {
@@ -9,6 +10,7 @@ class MenuScene extends StatelessWidget {
   Widget build(BuildContext context) {
     ConfigModel _config = Provider.of<ConfigModel>(context);
     PenModel _pen = Provider.of<PenModel>(context);
+    NoteModel _note = Provider.of<NoteModel>(context);
 
     return SafeArea(
       child: Scaffold(
@@ -35,7 +37,16 @@ class MenuScene extends StatelessWidget {
                 max: 3,
                 divisions: 3,
                 value: _config.onionRange,
-                onChanged: (double value) => _config.onionRange = value
+                onChanged: (double value) => _config.onionRange = value,
+              ),
+              Text('fps'),
+              Slider(
+                label: _note.fps.toString(),
+                min: 0,
+                max: 30,
+                divisions: 30,
+                value: _note.fps.toDouble(),
+                onChanged: (double value) => _note.fps = value.toInt(),
               )
             ],
           ),

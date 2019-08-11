@@ -9,7 +9,14 @@ class NoteModel extends ChangeNotifier {
   List<Page> _pages = [Page()];
   int pageIndex = 0;
   bool isPlaying = false;
-  double fps = 12;
+  int _fps = 4;
+
+  int get fps => _fps;
+
+  set fps(int value) {
+    _fps = value;
+    notifyListeners();
+  }
 
   void play() {
     isPlaying = !isPlaying;
