@@ -7,6 +7,8 @@ import '../models/note.dart';
 import '../widgets/sketcher.dart';
 
 class EditScene extends StatelessWidget {
+  final GlobalKey _sketcherKey = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     final NoteModel _note = Provider.of<NoteModel>(context);
@@ -15,6 +17,10 @@ class EditScene extends StatelessWidget {
       child: Scaffold(
         body: Column(
           children: <Widget>[
+            Expanded(
+              key: _sketcherKey,
+              child: Sketcher(),
+            ),
             ButtonTheme(
               height: 50,
               shape: RoundedRectangleBorder(
@@ -38,19 +44,19 @@ class EditScene extends StatelessWidget {
                           color: Colors.black,
                         ),
                       ),
+                      onPressed: () {},
                     ),
                   ),
                   Expanded(
                     child: RaisedButton(
                       child: Icon(Icons.cloud_upload),
-                      onPressed: () => Painter(context, _note).save(),
+                      onPressed: () {
+                        Painter(_sketcherKey.currentContext, _note).save();
+                      },
                     ),
                   ),
                 ],
               ),
-            ),
-            Expanded(
-              child: Sketcher(),
             ),
             ButtonTheme(
               height: 60,
@@ -75,8 +81,14 @@ class EditScene extends StatelessWidget {
                   ),
                   Expanded(
                     child: RaisedButton(
-                      child:
+                      child: Column(
+                        children: [
                           Icon(_note.isPlaying ? Icons.stop : Icons.play_arrow),
+                          Text(
+                            _note.pageStateDisplay,
+                          ),
+                        ],
+                      ),
                       onPressed: () => _note.play(),
                     ),
                   ),
