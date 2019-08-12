@@ -62,16 +62,6 @@ class NoteModel extends ChangeNotifier {
 
   int get pageLength => _pages.length;
 
-  void addLine(PenModel pen, Offset point) {
-    currentPage.addLine(pen, point);
-    notifyListeners();
-  }
-
-  void updateLine(Offset point) {
-    currentPage.updateLine(point);
-    notifyListeners();
-  }
-
   String get pageStateDisplay {
     return (pageIndex + 1).toString() + '/' + pageLength.toString();
   }

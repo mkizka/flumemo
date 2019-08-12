@@ -16,22 +16,21 @@ class Sketcher extends StatelessWidget {
     final _note = Provider.of<NoteModel>(context);
     final _pen = Provider.of<PenModel>(context);
 
-    Offset _getPointerPosition(PointerEvent details) {
-      RenderBox box = context.findRenderObject();
-      Offset point = box.globalToLocal(details.position);
-      return point;
+    void _onDragStart(DragStartDetails detals) {
+      _note.currentPage.addLine(_pen, detals.localPosition);
+      _note.notifyListeners();
     }
 
-    return Listener(
-      onPointerDown: (details) {
-        _note.addLine(_pen, _getPointerPosition(details));
-      },
-      onPointerMove: (details) {
-        _note.updateLine(_getPointerPosition(details));
-      },
-      onPointerUp: (details) {
-        _note.updateLine(_getPointerPosition(details));
-      },
+    void _onDragUpdate(DragUpdateDetails details) {
+      _note.currentPage.updateLine(details.localPosition);
+      _note.notifyListeners();
+    }
+
+    return GestureDetector(
+      onHorizontalDragStart: _onDragStart,
+      onVerticalDragStart: _onDragStart,
+      onHorizontalDragUpdate: _onDragUpdate,
+      onVerticalDragUpdate: _onDragUpdate,
       child: CustomPaint(
         painter: Painter(context, _note),
         child: ConstrainedBox(
