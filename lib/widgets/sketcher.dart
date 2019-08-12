@@ -1,8 +1,10 @@
 import 'dart:ui';
+import 'dart:ui' as ui;
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:image_picker_saver/image_picker_saver.dart';
 
 import '../models/note.dart';
 import '../models/pen.dart';
@@ -31,7 +33,7 @@ class Sketcher extends StatelessWidget {
         _note.updateLine(_getPointerPosition(details));
       },
       child: CustomPaint(
-        painter: _Painter(context, _note),
+        painter: Painter(context, _note),
         child: ConstrainedBox(
           constraints: BoxConstraints.expand(),
         ),
@@ -40,19 +42,19 @@ class Sketcher extends StatelessWidget {
   }
 }
 
-class _Painter extends CustomPainter {
+class Painter extends CustomPainter {
   final NoteModel _note;
   final BuildContext _context;
   ConfigModel _config;
 
-  _Painter(this._context, this._note);
+  Painter(this._context, this._note);
 
   @override
-  bool shouldRepaint(_Painter oldDelegate) {
+  bool shouldRepaint(Painter oldDelegate) {
     return true;
   }
 
-  void paint(Canvas canvas, Size size) {
+  void _paintOnion(Canvas canvas) {
     _config = Provider.of<ConfigModel>(_context);
     if (_config.isReady && !_note.isPlaying) {
       List<int> onionIndexList = List.generate(
@@ -72,9 +74,44 @@ class _Painter extends CustomPainter {
         });
       });
     }
+  }
 
+  void _paintBackground(Canvas canvas) {
+    Path path = Path();
+    path.moveTo(0, 0);
+    path.lineTo(_context.size.width, 0);
+    path.lineTo(_context.size.width, _context.size.height);
+    path.lineTo(0, _context.size.height);
+    path.close();
+    Paint paint = Paint()..color = Colors.white;
+    canvas.drawPath(path, paint);
+  }
+
+  void _paint(Canvas canvas) {
     _note.currentPage.lines.forEach((Line line) {
       canvas.drawPoints(PointMode.polygon, line.points, line.paint);
     });
+  }
+
+  void paint(Canvas canvas, Size size) {
+    _paintOnion(canvas);
+    _paint(canvas);
+  }
+
+  Future<Null> save() async {
+    PictureRecorder recorder = PictureRecorder();
+    Canvas canvas = Canvas(recorder);
+
+    _paintBackground(canvas);
+    _paint(canvas);
+
+    Picture picture = recorder.endRecording();
+
+    ui.Image image = await picture.toImage(
+      _context.size.width.toInt(),
+      _context.size.height.toInt(),
+    );
+    ByteData data = await image.toByteData(format: ui.ImageByteFormat.png);
+    await ImagePickerSaver.saveFile(fileData: data.buffer.asUint8List());
   }
 }
