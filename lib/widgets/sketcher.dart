@@ -13,8 +13,9 @@ import '../models/config.dart';
 class Sketcher extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final _note = Provider.of<NoteModel>(context);
-    final _pen = Provider.of<PenModel>(context);
+    final NoteModel _note = Provider.of<NoteModel>(context);
+    final PenModel _pen = Provider.of(context);
+    final ConfigModel _config = Provider.of<ConfigModel>(context);
 
     void _onDragStart(DragStartDetails detals) {
       _note.currentPage.addLine(_pen, detals.localPosition);
@@ -32,7 +33,7 @@ class Sketcher extends StatelessWidget {
       onHorizontalDragUpdate: _onDragUpdate,
       onVerticalDragUpdate: _onDragUpdate,
       child: CustomPaint(
-        painter: Painter(context, _note),
+        painter: Painter(_note, _config),
         child: ConstrainedBox(
           constraints: BoxConstraints.expand(),
         ),
@@ -43,10 +44,11 @@ class Sketcher extends StatelessWidget {
 
 class Painter extends CustomPainter {
   final NoteModel _note;
-  final BuildContext _context;
-  ConfigModel _config;
+  final ConfigModel _config;
 
-  Painter(this._context, this._note);
+  Painter(this._note, this._config);
+
+  Size get size => _note.context.size;
 
   @override
   bool shouldRepaint(Painter oldDelegate) {
@@ -54,7 +56,6 @@ class Painter extends CustomPainter {
   }
 
   void _paintOnion(Canvas canvas) {
-    _config = Provider.of<ConfigModel>(_context);
     if (_config.isReady && !_note.isPlaying) {
       List<int> onionIndexList = List.generate(
         _config.onionRange,
@@ -78,9 +79,9 @@ class Painter extends CustomPainter {
   void _paintBackground(Canvas canvas) {
     Path path = Path();
     path.moveTo(0, 0);
-    path.lineTo(_context.size.width, 0);
-    path.lineTo(_context.size.width, _context.size.height);
-    path.lineTo(0, _context.size.height);
+    path.lineTo(size.width, 0);
+    path.lineTo(size.width, size.height);
+    path.lineTo(0, size.height);
     path.close();
     Paint paint = Paint()..color = Colors.white;
     canvas.drawPath(path, paint);
@@ -107,8 +108,8 @@ class Painter extends CustomPainter {
     Picture picture = recorder.endRecording();
 
     ui.Image image = await picture.toImage(
-      _context.size.width.toInt(),
-      _context.size.height.toInt(),
+      size.width.toInt(),
+      size.height.toInt(),
     );
     ByteData data = await image.toByteData(format: ui.ImageByteFormat.png);
     await ImagePickerSaver.saveFile(fileData: data.buffer.asUint8List());

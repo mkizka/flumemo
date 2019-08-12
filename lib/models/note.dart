@@ -10,6 +10,7 @@ class NoteModel extends ChangeNotifier {
   int pageIndex = 0;
   bool isPlaying = false;
   int _fps = 4;
+  BuildContext context;
 
   int get fps => _fps;
 

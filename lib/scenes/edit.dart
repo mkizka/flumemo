@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/note.dart';
+import '../models/config.dart';
 import '../widgets/sketcher.dart';
 
 class EditScene extends StatelessWidget {
@@ -12,6 +13,8 @@ class EditScene extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final NoteModel _note = Provider.of<NoteModel>(context);
+    final ConfigModel _config = Provider.of<ConfigModel>(context);
+    _note.context = _sketcherKey.currentContext;
 
     return SafeArea(
       child: Scaffold(
@@ -51,7 +54,7 @@ class EditScene extends StatelessWidget {
                     child: RaisedButton(
                       child: Icon(Icons.cloud_upload),
                       onPressed: () {
-                        Painter(_sketcherKey.currentContext, _note).save();
+                        Painter(_note, _config).save();
                       },
                     ),
                   ),
