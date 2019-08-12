@@ -13,7 +13,6 @@ class EditScene extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final NoteModel _note = Provider.of<NoteModel>(context);
-    final ConfigModel _config = Provider.of<ConfigModel>(context);
     _note.context = _sketcherKey.currentContext;
 
     return SafeArea(
@@ -23,43 +22,6 @@ class EditScene extends StatelessWidget {
             Expanded(
               key: _sketcherKey,
               child: Sketcher(),
-            ),
-            ButtonTheme(
-              height: 50,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.zero,
-              ),
-              buttonColor: Colors.grey,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: RaisedButton(
-                      child: Icon(Icons.layers),
-                      onPressed: () {},
-                    ),
-                  ),
-                  Expanded(
-                    child: RaisedButton(
-                      child: Text(
-                        _note.pageStateDisplay,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.black,
-                        ),
-                      ),
-                      onPressed: () {},
-                    ),
-                  ),
-                  Expanded(
-                    child: RaisedButton(
-                      child: Icon(Icons.cloud_upload),
-                      onPressed: () {
-                        Painter(_note, _config).save();
-                      },
-                    ),
-                  ),
-                ],
-              ),
             ),
             ButtonTheme(
               height: 60,
@@ -87,9 +49,7 @@ class EditScene extends StatelessWidget {
                       child: Column(
                         children: [
                           Icon(_note.isPlaying ? Icons.stop : Icons.play_arrow),
-                          Text(
-                            _note.pageStateDisplay,
-                          ),
+                          Text(_note.pageStateDisplay),
                         ],
                       ),
                       onPressed: () => _note.play(),
