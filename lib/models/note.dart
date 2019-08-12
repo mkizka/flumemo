@@ -70,13 +70,30 @@ class NoteModel extends ChangeNotifier {
 
 class Page {
   List<Line> lines = [];
+  List<Line> _redoableLines = [];
 
   void addLine(PenModel pen, Offset point) {
     lines.add(Line(pen.paint)..points.add(point));
+    _redoableLines.clear();
   }
 
   void updateLine(Offset point) {
     lines.last.points.add(point);
+  }
+
+  void undo() {
+    if (lines.isNotEmpty) {
+      Line removedLast = lines.last;
+      lines.removeLast();
+      _redoableLines.add(removedLast);
+    }
+  }
+
+  void redo() {
+    if (_redoableLines.isNotEmpty) {
+      lines.add(_redoableLines.last);
+      _redoableLines.removeLast();
+    }
   }
 }
 

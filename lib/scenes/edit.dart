@@ -1,10 +1,7 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/note.dart';
-import '../models/config.dart';
 import '../widgets/sketcher.dart';
 
 class EditScene extends StatelessWidget {
@@ -35,7 +32,13 @@ class EditScene extends StatelessWidget {
                   Expanded(
                     child: RaisedButton(
                       child: Icon(Icons.undo),
-                      onPressed: () => _note.currentPage.lines.removeLast(),
+                      onPressed: () => _note.currentPage.undo(),
+                    ),
+                  ),
+                  Expanded(
+                    child: RaisedButton(
+                      child: Icon(Icons.redo),
+                      onPressed: () => _note.currentPage.redo(),
                     ),
                   ),
                   Expanded(
