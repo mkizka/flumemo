@@ -71,7 +71,7 @@ class MenuScene extends StatelessWidget {
                     child: RaisedButton(
                       child: Icon(Icons.save_alt),
                       onPressed: () {
-                        Painter(_note, _config).save();
+                        Painter(_note, _config).writeGifAnimation();
                       },
                     ),
                   ),
