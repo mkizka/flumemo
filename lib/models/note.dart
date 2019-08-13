@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import './pen.dart';
 
 class NoteModel extends ChangeNotifier {
-  List<Page> _pages = [Page()];
+  List<Page> page = [Page()];
   int pageIndex = 0;
   bool isPlaying = false;
   int _fps = 4;
@@ -38,7 +38,7 @@ class NoteModel extends ChangeNotifier {
 
   void pushPageAndLoop() {
     pageIndex++;
-    if (pageIndex >= _pages.length) {
+    if (pageIndex >= page.length) {
       pageIndex = 0;
     }
     notifyListeners();
@@ -46,8 +46,8 @@ class NoteModel extends ChangeNotifier {
 
   void pushPageAndCreate() {
     pageIndex++;
-    if (pageIndex >= _pages.length) {
-      _pages.add(Page());
+    if (pageIndex >= page.length) {
+      page.add(Page());
     }
     notifyListeners();
   }
@@ -57,14 +57,12 @@ class NoteModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Page getRelativePage(int i) => _pages[pageIndex + i];
+  Page getRelativePage(int i) => page[pageIndex + i];
 
   Page get currentPage => getRelativePage(0);
 
-  int get pageLength => _pages.length;
-
   String get pageStateDisplay {
-    return (pageIndex + 1).toString() + '/' + pageLength.toString();
+    return (pageIndex + 1).toString() + '/' + page.length.toString();
   }
 }
 
