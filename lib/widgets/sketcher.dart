@@ -123,7 +123,7 @@ class Painter extends CustomPainter {
   Future<List<int>> encodeGifAnimation() async {
     img.Animation animation = img.Animation();
 
-    for (Page page in _note.page) {
+    for (Page page in _note.pages) {
       ByteData data = await getByteData(page);
       img.Image frame = img.decodePng(data.buffer.asUint8List());
       animation.addFrame(frame);
