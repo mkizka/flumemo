@@ -1,10 +1,12 @@
+import 'dart:io';
 import 'dart:ui';
 import 'dart:ui' as ui;
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:image_picker_saver/image_picker_saver.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:image/image.dart' as img;
 
 import '../models/note.dart';
 import '../models/pen.dart';
@@ -18,7 +20,7 @@ class Sketcher extends StatelessWidget {
     final ConfigModel _config = Provider.of<ConfigModel>(context);
 
     bool isInSketcher(Offset offset) {
-      return 0 <= offset.dy  && offset.dy <= context.size.height;
+      return 0 <= offset.dy && offset.dy <= context.size.height;
     }
 
     void _onDragStart(DragStartDetails details) {
@@ -93,23 +95,21 @@ class Painter extends CustomPainter {
     canvas.drawPath(path, paint);
   }
 
-  void _paint(Canvas canvas) {
+  void paint(Canvas canvas, Size size) {
+    _paintOnion(canvas);
     _note.currentPage.lines.forEach((Line line) {
       canvas.drawPoints(PointMode.polygon, line.points, line.paint);
     });
   }
 
-  void paint(Canvas canvas, Size size) {
-    _paintOnion(canvas);
-    _paint(canvas);
-  }
-
-  Future<Null> save() async {
+  Future<ByteData> getByteData(Page page) async {
     PictureRecorder recorder = PictureRecorder();
     Canvas canvas = Canvas(recorder);
 
     _paintBackground(canvas);
-    _paint(canvas);
+    page.lines.forEach((Line line) {
+      canvas.drawPoints(PointMode.polygon, line.points, line.paint);
+    });
 
     Picture picture = recorder.endRecording();
 
@@ -117,7 +117,25 @@ class Painter extends CustomPainter {
       size.width.toInt(),
       size.height.toInt(),
     );
-    ByteData data = await image.toByteData(format: ui.ImageByteFormat.png);
-    await ImagePickerSaver.saveFile(fileData: data.buffer.asUint8List());
+    return await image.toByteData(format: ImageByteFormat.png);
+  }
+
+  Future<List<int>> encodeGifAnimation() async {
+    img.Animation animation = img.Animation();
+
+    for (Page page in _note.page) {
+      ByteData data = await getByteData(page);
+      img.Image frame = img.decodePng(data.buffer.asUint8List());
+      animation.addFrame(frame);
+    }
+
+    return img.encodeGifAnimation(animation);
+  }
+
+  void writeGifAnimation() async {
+    Directory directory = await getExternalStorageDirectory();
+    List<int> data = await encodeGifAnimation();
+    File('${directory.path}/output.gif')..writeAsBytesSync(data);
+    print('success');
   }
 }
