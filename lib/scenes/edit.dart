@@ -16,6 +16,36 @@ class EditScene extends StatelessWidget {
       child: Scaffold(
         body: Column(
           children: <Widget>[
+            ButtonTheme(
+              height: 50,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.zero,
+              ),
+              buttonColor: Colors.grey,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: RaisedButton(
+                      child: Icon(Icons.redo),
+                      onPressed: () => _note.currentPage.redo(),
+                    ),
+                  ),
+                  Expanded(
+                    child: RaisedButton(
+                      disabledTextColor: Colors.black,
+                      child: Text(_note.pageStateDisplay),
+                    ),
+                  ),
+                  Expanded(
+                    child: RaisedButton(
+                      child: Icon(Icons.menu),
+                      onPressed: () => Navigator.pushNamed(context, '/menu'),
+                    ),
+                  ),
+                ],
+              ),
+            ),
             Expanded(
               key: _sketcherKey,
               child: Sketcher(),
@@ -37,23 +67,14 @@ class EditScene extends StatelessWidget {
                   ),
                   Expanded(
                     child: RaisedButton(
-                      child: Icon(Icons.redo),
-                      onPressed: () => _note.currentPage.redo(),
-                    ),
-                  ),
-                  Expanded(
-                    child: RaisedButton(
                       child: Icon(Icons.arrow_left),
                       onPressed: () => _note.backPage(),
                     ),
                   ),
                   Expanded(
                     child: RaisedButton(
-                      child: Column(
-                        children: [
-                          Icon(_note.isPlaying ? Icons.stop : Icons.play_arrow),
-                          Text(_note.pageStateDisplay),
-                        ],
+                      child: Icon(
+                        _note.isPlaying ? Icons.stop : Icons.play_arrow,
                       ),
                       onPressed: () => _note.play(),
                     ),
@@ -62,12 +83,6 @@ class EditScene extends StatelessWidget {
                     child: RaisedButton(
                       child: Icon(Icons.arrow_right),
                       onPressed: () => _note.pushPageAndCreate(),
-                    ),
-                  ),
-                  Expanded(
-                    child: RaisedButton(
-                      child: Icon(Icons.menu),
-                      onPressed: () => Navigator.pushNamed(context, '/menu'),
                     ),
                   ),
                 ],
