@@ -28,7 +28,13 @@ class EditScene extends StatelessWidget {
                   Expanded(
                     child: RaisedButton(
                       child: Icon(Icons.redo),
-                      onPressed: () => _note.currentPage.redo(),
+                      textColor: _note.currentPage.redoableLines.isNotEmpty
+                          ? Colors.black
+                          : Colors.grey.shade600,
+                      onPressed: () {
+                        _note.currentPage.redo();
+                        _note.notifyListeners();
+                      },
                     ),
                   ),
                   Expanded(
@@ -62,7 +68,13 @@ class EditScene extends StatelessWidget {
                   Expanded(
                     child: RaisedButton(
                       child: Icon(Icons.undo),
-                      onPressed: () => _note.currentPage.undo(),
+                      textColor: _note.currentPage.lines.isNotEmpty
+                          ? Colors.black
+                          : Colors.grey.shade600,
+                      onPressed: () {
+                        _note.currentPage.undo();
+                        _note.notifyListeners();
+                      },
                     ),
                   ),
                   Expanded(
