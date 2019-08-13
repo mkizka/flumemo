@@ -5,6 +5,7 @@ import '../widgets/sketcher.dart';
 import '../models/pen.dart';
 import '../models/note.dart';
 import '../models/config.dart';
+import '../models/twitter.dart';
 
 class MenuScene extends StatelessWidget {
   @override
@@ -12,6 +13,7 @@ class MenuScene extends StatelessWidget {
     ConfigModel _config = Provider.of<ConfigModel>(context);
     PenModel _pen = Provider.of<PenModel>(context);
     NoteModel _note = Provider.of<NoteModel>(context);
+    TwitterModel _twitter = Provider.of<TwitterModel>(context);
 
     return SafeArea(
       child: Scaffold(
@@ -64,7 +66,9 @@ class MenuScene extends StatelessWidget {
                   Expanded(
                     child: RaisedButton(
                       child: Icon(Icons.layers),
-                      onPressed: () {},
+                      onPressed: () async {
+                        await _twitter.login();
+                      },
                     ),
                   ),
                   Expanded(
