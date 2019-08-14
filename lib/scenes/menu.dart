@@ -66,8 +66,17 @@ class MenuScene extends StatelessWidget {
                   Expanded(
                     child: RaisedButton(
                       child: Icon(Icons.layers),
-                      onPressed: () async {
-                        await _twitter.login();
+                      onPressed: () {
+                        if (!_twitter.isAuthenticated) {
+                          _twitter.login();
+                        }
+                        if (_twitter.isAuthenticated) {
+                          Painter(_note, _config)
+                              .writeGifAnimation()
+                              .then((file) {
+                            _twitter.tweet(file);
+                          });
+                        }
                       },
                     ),
                   ),
