@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
+import 'package:flutter_ffmpeg/log_level.dart';
 import 'package:uuid/uuid.dart';
 
 import '../models/note.dart';
@@ -124,8 +125,9 @@ class Painter extends CustomPainter {
     return File(path)..writeAsBytesSync(data.buffer.asUint8List());
   }
 
-  void writeGifAnimation() async {
+  Future<File> writeGifAnimation() async {
     final FlutterFFmpeg _flutterFFmpeg = FlutterFFmpeg();
+    _flutterFFmpeg.setLogLevel(LogLevel.AV_LOG_ERROR);
     final Directory tempDir = await getTemporaryDirectory();
     final String uniqueId = 'flumemo_' + Uuid().v4().substring(0, 8);
     final Directory appDir = await getExternalStorageDirectory();
@@ -144,9 +146,7 @@ class Painter extends CustomPainter {
         '-vf palettegen ' +
         '${tempDir.path}/$uniqueId/palette.png';
 
-    _flutterFFmpeg.execute(arguments).then((result) {
-      print("FFmpeg Result: $result");
-    });
+    await _flutterFFmpeg.execute(arguments);
 
     String arguments2 = '' +
         '-f image2 ' +
@@ -156,8 +156,8 @@ class Painter extends CustomPainter {
         '-filter_complex paletteuse ' +
         '${appDir.path}/$uniqueId.gif';
 
-    _flutterFFmpeg.execute(arguments2).then((result) {
-      print("FFmpeg Result: $result");
-    });
+    await _flutterFFmpeg.execute(arguments2);
+
+    return File('${appDir.path}/$uniqueId.gif');
   }
 }
