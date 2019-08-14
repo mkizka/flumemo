@@ -6,7 +6,8 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:image/image.dart' as img;
+import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
+import 'package:uuid/uuid.dart';
 
 import '../models/note.dart';
 import '../models/pen.dart';
@@ -102,7 +103,7 @@ class Painter extends CustomPainter {
     });
   }
 
-  Future<ByteData> getByteData(Page page) async {
+  Future<File> save(String path, Page page) async {
     PictureRecorder recorder = PictureRecorder();
     Canvas canvas = Canvas(recorder);
 
@@ -117,25 +118,46 @@ class Painter extends CustomPainter {
       size.width.toInt(),
       size.height.toInt(),
     );
-    return await image.toByteData(format: ImageByteFormat.png);
-  }
 
-  Future<List<int>> encodeGifAnimation() async {
-    img.Animation animation = img.Animation();
-
-    for (Page page in _note.pages) {
-      ByteData data = await getByteData(page);
-      img.Image frame = img.decodePng(data.buffer.asUint8List());
-      animation.addFrame(frame);
-    }
-
-    return img.encodeGifAnimation(animation);
+    ByteData data = await image.toByteData(format: ImageByteFormat.png);
+    print(path);
+    return File(path)..writeAsBytesSync(data.buffer.asUint8List());
   }
 
   void writeGifAnimation() async {
-    Directory directory = await getExternalStorageDirectory();
-    List<int> data = await encodeGifAnimation();
-    File('${directory.path}/output.gif')..writeAsBytesSync(data);
-    print('success');
+    final FlutterFFmpeg _flutterFFmpeg = FlutterFFmpeg();
+    final Directory tempDir = await getTemporaryDirectory();
+    final String uniqueId = 'flumemo_' + Uuid().v4().substring(0, 8);
+    final Directory appDir = await getExternalStorageDirectory();
+
+    Directory('${tempDir.path}/$uniqueId').createSync();
+
+    for (int i = 0; i < _note.pages.length; i++) {
+      await save(
+        '${tempDir.path}/$uniqueId/${i.toString().padLeft(3, '0')}.png',
+        _note.pages[i],
+      );
+    }
+
+    String arguments = '' +
+        '-i "${tempDir.path}/$uniqueId/%03d.png" ' +
+        '-vf palettegen ' +
+        '${tempDir.path}/$uniqueId/palette.png';
+
+    _flutterFFmpeg.execute(arguments).then((result) {
+      print("FFmpeg Result: $result");
+    });
+
+    String arguments2 = '' +
+        '-f image2 ' +
+        '-r ${_note.fps.toString()} ' +
+        '-i "${tempDir.path}/$uniqueId/%03d.png" ' +
+        '-i "${tempDir.path}/$uniqueId/palette.png" ' +
+        '-filter_complex paletteuse ' +
+        '${appDir.path}/$uniqueId.gif';
+
+    _flutterFFmpeg.execute(arguments2).then((result) {
+      print("FFmpeg Result: $result");
+    });
   }
 }
