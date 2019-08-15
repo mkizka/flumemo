@@ -16,10 +16,12 @@ class MenuScene extends StatelessWidget {
     ConfigModel _config = Provider.of<ConfigModel>(context);
     PenModel _pen = Provider.of<PenModel>(context);
     NoteModel _note = Provider.of<NoteModel>(context);
-    TwitterModel _twitter = Provider.of<TwitterModel>(context);
+
+    GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
     return SafeArea(
       child: Scaffold(
+        key: _scaffoldKey,
         body: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
@@ -75,12 +77,18 @@ class MenuScene extends StatelessWidget {
                     child: RaisedButton(
                       child: Icon(Icons.file_upload),
                       onPressed: () async {
-                        File file = await Painter(_note, _config).writeGifAnimation();
-                        showDialog(
+                        File file =
+                            await Painter(_note, _config).writeGifAnimation();
+                        var result = await showDialog(
                           context: context,
                           builder: (BuildContext context) => AlertDialog(
                             title: Text("プレビュ－"),
                             content: TweetForm(file: file),
+                          ),
+                        );
+                        _scaffoldKey.currentState.showSnackBar(
+                          SnackBar(
+                            content: Text(result.toString()),
                           ),
                         );
                       },

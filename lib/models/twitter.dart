@@ -38,6 +38,8 @@ class TwitterModel extends ChangeNotifier {
   }
 
   Future<void> login() async {
+    if (isAuthenticated) return;
+
     var twitterLogin = new TwitterLogin(
       consumerKey: consumerKey,
       consumerSecret: consumerSecret,
@@ -51,10 +53,10 @@ class TwitterModel extends ChangeNotifier {
         accessSecret = result.session.secret;
         break;
       case TwitterLoginStatus.cancelledByUser:
-        print('canceled');
+        throw Exception('ログインがキャンセルされました');
         break;
       case TwitterLoginStatus.error:
-        print(result.errorMessage);
+        throw Exception('ログイン処理でエラーが発生しました');
         break;
     }
   }

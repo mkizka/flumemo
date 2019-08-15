@@ -38,8 +38,17 @@ class _TweetFormState extends State<TweetForm> {
             ),
             color: Colors.lightBlueAccent,
             onPressed: () {
-              _twitter.tweet(text, widget.file);
-              Navigator.pop(context);
+              _twitter.login().then((_) {
+                _twitter.tweet(text, widget.file).then((result) {
+                  if (result.isSuccess) {
+                    Navigator.pop(context, 'ツイートしました');
+                  } else {
+                    Navigator.pop(context, 'ツイートに失敗しました');
+                  }
+                });
+              }).catchError((e) {
+                Navigator.pop(context, e.message);
+              });
             },
           ),
           Image.file(
