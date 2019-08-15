@@ -1,14 +1,10 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../widgets/sketcher.dart';
 import '../widgets/tweeter.dart';
 import '../models/pen.dart';
 import '../models/note.dart';
 import '../models/config.dart';
-import '../models/twitter.dart';
 
 class MenuScene extends StatelessWidget {
   @override
@@ -77,20 +73,20 @@ class MenuScene extends StatelessWidget {
                     child: RaisedButton(
                       child: Icon(Icons.file_upload),
                       onPressed: () async {
-                        File file =
-                            await Painter(_note, _config).writeGifAnimation();
                         var result = await showDialog(
                           context: context,
                           builder: (BuildContext context) => AlertDialog(
                             title: Text("プレビュ－"),
-                            content: TweetForm(file: file),
+                            content: TweetForm(),
                           ),
                         );
-                        _scaffoldKey.currentState.showSnackBar(
-                          SnackBar(
-                            content: Text(result.toString()),
-                          ),
-                        );
+                        if (result != null) {
+                          _scaffoldKey.currentState.showSnackBar(
+                            SnackBar(
+                              content: Text(result.toString()),
+                            ),
+                          );
+                        }
                       },
                     ),
                   ),

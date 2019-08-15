@@ -121,11 +121,10 @@ class Painter extends CustomPainter {
     );
 
     ByteData data = await image.toByteData(format: ImageByteFormat.png);
-    print(path);
     return File(path)..writeAsBytesSync(data.buffer.asUint8List());
   }
 
-  Future<File> writeGifAnimation() async {
+  Future<File> writeGif() async {
     final FlutterFFmpeg _flutterFFmpeg = FlutterFFmpeg();
     _flutterFFmpeg.setLogLevel(LogLevel.AV_LOG_ERROR);
     final Directory tempDir = await getTemporaryDirectory();
