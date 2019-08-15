@@ -25,7 +25,7 @@ class Sketcher extends StatelessWidget {
       return 0 <= offset.dy && offset.dy <= context.size.height;
     }
 
-    void _onDragStart(DragStartDetails details) {
+    void _onDragStart(DragDownDetails details) {
       if (!isInSketcher(details.localPosition)) return;
       _note.currentPage.addLine(_pen, details.localPosition);
       _note.notifyListeners();
@@ -38,10 +38,8 @@ class Sketcher extends StatelessWidget {
     }
 
     return GestureDetector(
-      onHorizontalDragStart: _onDragStart,
-      onVerticalDragStart: _onDragStart,
-      onHorizontalDragUpdate: _onDragUpdate,
-      onVerticalDragUpdate: _onDragUpdate,
+      onPanDown: _onDragStart,
+      onPanUpdate: _onDragUpdate,
       child: CustomPaint(
         painter: Painter(_note, _config),
         child: ConstrainedBox(
