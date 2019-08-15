@@ -34,6 +34,10 @@ class MyApp extends StatelessWidget {
           '/': (BuildContext context) => EditScene(),
           '/menu': (BuildContext context) => MenuScene()
         },
+        theme: ThemeData(
+          primaryColor: Colors.pink[800],
+          accentColor: Colors.pink[400],
+        ),
       ),
     );
   }
