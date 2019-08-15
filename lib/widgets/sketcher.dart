@@ -130,7 +130,6 @@ class Painter extends CustomPainter {
     _flutterFFmpeg.setLogLevel(LogLevel.AV_LOG_ERROR);
     final Directory tempDir = await getTemporaryDirectory();
     final String uniqueId = 'flumemo_' + Uuid().v4().substring(0, 8);
-    final Directory appDir = await getExternalStorageDirectory();
 
     Directory('${tempDir.path}/$uniqueId').createSync();
 
@@ -154,10 +153,10 @@ class Painter extends CustomPainter {
         '-i "${tempDir.path}/$uniqueId/%03d.png" ' +
         '-i "${tempDir.path}/$uniqueId/palette.png" ' +
         '-filter_complex paletteuse ' +
-        '${appDir.path}/$uniqueId.gif';
+        '${tempDir.path}/$uniqueId/output.gif';
 
     await _flutterFFmpeg.execute(arguments2);
 
-    return File('${appDir.path}/$uniqueId.gif');
+    return File('${tempDir.path}/$uniqueId/output.gif');
   }
 }
