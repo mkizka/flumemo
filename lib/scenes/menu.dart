@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/sketcher.dart';
+import '../widgets/tweeter.dart';
 import '../models/pen.dart';
 import '../models/note.dart';
 import '../models/config.dart';
@@ -66,25 +69,20 @@ class MenuScene extends StatelessWidget {
                   Expanded(
                     child: RaisedButton(
                       child: Icon(Icons.layers),
-                      onPressed: () {
-                        if (!_twitter.isAuthenticated) {
-                          _twitter.login();
-                        }
-                        if (_twitter.isAuthenticated) {
-                          Painter(_note, _config)
-                              .writeGifAnimation()
-                              .then((file) {
-                            _twitter.tweet(file);
-                          });
-                        }
-                      },
                     ),
                   ),
                   Expanded(
                     child: RaisedButton(
-                      child: Icon(Icons.save_alt),
-                      onPressed: () {
-                        Painter(_note, _config).writeGifAnimation();
+                      child: Icon(Icons.file_upload),
+                      onPressed: () async {
+                        File file = await Painter(_note, _config).writeGifAnimation();
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                            title: Text("プレビュ－"),
+                            content: TweetForm(file: file),
+                          ),
+                        );
                       },
                     ),
                   ),

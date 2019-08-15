@@ -77,53 +77,53 @@ class TwitterModel extends ChangeNotifier {
     );
   }
 
-  bool isSuccess(http.BaseResponse r) {
-    return 200 <= r.statusCode && r.statusCode <= 299;
-  }
-
-  Future<void> tweet(File file) async {
-    var baseUrl = 'https://upload.twitter.com/1.1/media/upload.json';
+  Future<TweetResult> tweet(String text, File file) async {
+    String baseUrl = 'https://upload.twitter.com/1.1/media/upload.json';
 
     var response = await client.post(baseUrl, body: {
       'command': 'INIT',
       'total_bytes': file.lengthSync().toString(),
       'media_type': 'image/gif',
     });
-    print(response.statusCode);
-    print(response.body);
-    if (!isSuccess(response)) return;
+    if (!TweetResult(response).isSuccess) return TweetResult(response);
 
-    String mediaId = jsonDecode(response.body)['media_id'].toString();
+    String mediaId = jsonDecode(response.body)['media_id_string'];
 
     var request = http.MultipartRequest('POST', Uri.parse(baseUrl));
     request.fields['command'] = 'APPEND';
     request.fields['media_id'] = mediaId;
     request.fields['segment_index'] = '0';
     request.files.add(await http.MultipartFile.fromPath(
-        'media',
-        file.path,
-        contentType: MediaType('multipart', 'form-data')
+      'media',
+      file.path,
+      contentType: MediaType('multipart', 'form-data'),
     ));
     var response2 = await client.send(request);
-    print(response2.statusCode);
-    if (!isSuccess(response2)) return;
+    if (!TweetResult(response2).isSuccess) return TweetResult(response2);
 
     var response3 = await client.post(baseUrl, body: {
       'command': 'FINALIZE',
       'media_id': mediaId,
     });
-    print(response3.statusCode);
-    print(response3.body);
-    if (!isSuccess(response3)) return;
+    if (!TweetResult(response3).isSuccess) return TweetResult(response3);
 
     var response4 = await client.post(
       'https://api.twitter.com/1.1/statuses/update.json',
       body: {
-        'status': 'これはテストツイート',
+        'status': text,
         'media_ids': mediaId,
       },
     );
-    print(response4.statusCode);
-    print(response4.body);
+    return TweetResult(response4);
   }
+}
+
+class TweetResult {
+  final http.BaseResponse response;
+
+  bool get isSuccess {
+    return 200 <= response.statusCode && response.statusCode <= 299;
+  }
+
+  TweetResult(this.response);
 }
