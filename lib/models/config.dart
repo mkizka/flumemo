@@ -1,22 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ConfigModel extends ChangeNotifier {
-  SharedPreferences prefs;
-  bool isReady = false;
+  int _onionRange = 0;
 
-  int get onionRange => prefs.getInt('onionRange') ?? 1;
+  int get onionRange => _onionRange;
 
   set onionRange(int value) {
-    prefs.setInt('onionRange', value).then((_) => notifyListeners());
-  }
-
-  ConfigModel() {
-    SharedPreferences.getInstance().then((instance) {
-      prefs = instance;
-      isReady = true;
-      notifyListeners();
-    });
+    _onionRange = value;
+    notifyListeners();
   }
 }
