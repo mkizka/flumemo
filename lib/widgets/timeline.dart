@@ -43,16 +43,34 @@ class Timeline extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               FlatButton(
+                child: Icon(Icons.keyboard_arrow_up),
+                onPressed: _note.pageIndex > 0
+                    ? () => _note.exchangePage(_note.pageIndex, -1)
+                    : null,
+              ),
+              Text(_note.pageStateDisplay),
+              FlatButton(
+                child: Icon(Icons.keyboard_arrow_down),
+                onPressed: _note.pageIndex < _note.pages.length - 1
+                    ? () => _note.exchangePage(_note.pageIndex, 1)
+                    : null,
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              RaisedButton(
                 child: Text('削除'),
                 onPressed: _note.pages.length > 1
                     ? () => _note.deletePage(_note.pageIndex)
                     : null,
               ),
-              FlatButton(
+              RaisedButton(
                 child: Text('追加'),
                 onPressed: () => _note.insertPage(_note.pageIndex),
               ),
-              FlatButton(
+              RaisedButton(
                 child: Text('複製'),
                 onPressed: () => _note.copyPage(_note.pageIndex),
               ),

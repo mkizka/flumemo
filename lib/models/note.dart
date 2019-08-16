@@ -80,6 +80,14 @@ class NoteModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void exchangePage(int index, int relativeIndex) {
+    Page temp = Page.from(pages[index]);
+    pages[index] = Page.from(pages[index + relativeIndex]);
+    pages[index + relativeIndex] = temp;
+    pageIndex += relativeIndex;
+    notifyListeners();
+  }
+
   Page getRelativePage(int i) => pages[pageIndex + i];
 
   Page get currentPage => getRelativePage(0);
