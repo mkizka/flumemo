@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+List<Color> penColorList = [
+  Colors.indigo,
+  Colors.green,
+];
+
 class PenModel extends ChangeNotifier {
-  Color _color = Colors.primaries[0];
+  Color _color = penColorList[0];
   double _width = 3;
+  bool _isActive = true;
 
   Color get color => _color;
 
@@ -12,10 +18,17 @@ class PenModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  get width => _width;
+  double get width => _width;
 
   set width(double width) {
     _width = width;
+    notifyListeners();
+  }
+
+  bool get isActive => _isActive;
+
+  set isActive(bool value) {
+    _isActive = value;
     notifyListeners();
   }
 

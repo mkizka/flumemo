@@ -60,26 +60,55 @@ class PenForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final PenModel _pen = Provider.of<PenModel>(context);
+    final NoteModel _note = Provider.of<NoteModel>(context);
 
     return SingleChildScrollView(
       child: Container(
         child: Column(
           children: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                FlatButton(
-                  child: Icon(Icons.edit),
-                  textColor: textColor(_pen.color),
-                  color: _pen.color,
-                  onPressed: () {},
+                Container(
+                  padding: EdgeInsets.only(left: 5, right: 5),
+                  color: _pen.isActive ? Colors.grey.shade400 : null,
+                  child: FlatButton(
+                    child: Icon(Icons.edit),
+                    textColor: textColor(_pen.color),
+                    color: _pen.color,
+                    onPressed: () => _pen.isActive = true,
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.only(left: 5, right: 5),
+                  color: !_pen.isActive ? Colors.grey.shade400 : null,
+                  child: FlatButton(
+                    child: Icon(Icons.mode_edit),
+                    textColor: textColor(_note.backgroundColor),
+                    color: _note.backgroundColor,
+                    onPressed: () => _pen.isActive = false,
+                  ),
                 ),
               ],
             ),
             SizedBox(height: 20),
-            BlockPicker(
-              availableColors: Colors.primaries,
-              pickerColor: _pen.color,
-              onColorChanged: (Color value) => _pen.color = value,
+            Visibility(
+              visible: _pen.isActive,
+              child: BlockPicker(
+                availableColors: penColorList,
+                pickerColor: _pen.color,
+                onColorChanged: (Color value) => _pen.color = value,
+              ),
+            ),
+            Visibility(
+              visible: !_pen.isActive,
+              child: BlockPicker(
+                availableColors: backgroundColorList,
+                pickerColor: _note.backgroundColor,
+                onColorChanged: (Color value) {
+                  _note.backgroundColor = value;
+                },
+              ),
             ),
           ],
         ),

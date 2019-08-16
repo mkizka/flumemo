@@ -37,13 +37,16 @@ class Sketcher extends StatelessWidget {
       _note.notifyListeners();
     }
 
-    return GestureDetector(
-      onPanDown: _onDragStart,
-      onPanUpdate: _onDragUpdate,
-      child: CustomPaint(
-        painter: Painter(_note, onionRange: _config.onionRange),
-        child: ConstrainedBox(
-          constraints: BoxConstraints.expand(),
+    return Container(
+      color: _note.backgroundColor,
+      child: GestureDetector(
+        onPanDown: _onDragStart,
+        onPanUpdate: _onDragUpdate,
+        child: CustomPaint(
+          painter: Painter(_note, onionRange: _config.onionRange),
+          child: ConstrainedBox(
+            constraints: BoxConstraints.expand(),
+          ),
         ),
       ),
     );
@@ -97,7 +100,7 @@ class Painter extends CustomPainter {
     path.lineTo(size.width, size.height);
     path.lineTo(0, size.height);
     path.close();
-    Paint paint = Paint()..color = Colors.white;
+    Paint paint = Paint()..color = note.backgroundColor;
     canvas.drawPath(path, paint);
   }
 

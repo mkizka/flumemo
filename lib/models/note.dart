@@ -5,10 +5,16 @@ import 'package:flutter/material.dart';
 
 import './pen.dart';
 
+List<Color> backgroundColorList = [
+  Colors.lightBlueAccent,
+  Colors.lightGreenAccent,
+];
+
 class NoteModel extends ChangeNotifier {
   List<Page> pages = [Page()];
   int pageIndex = 0;
   bool isPlaying = false;
+  Color _backgroundColor = backgroundColorList[0];
   int _fps = 4;
   BuildContext context;
 
@@ -16,6 +22,13 @@ class NoteModel extends ChangeNotifier {
 
   set fps(int value) {
     _fps = value;
+    notifyListeners();
+  }
+
+  Color get backgroundColor => _backgroundColor;
+
+  set backgroundColor(Color value) {
+    _backgroundColor = value;
     notifyListeners();
   }
 
