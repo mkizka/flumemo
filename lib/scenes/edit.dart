@@ -84,51 +84,45 @@ class EditScene extends StatelessWidget {
           color: Theme.of(context).primaryColor,
           child: Container(
             height: 60,
-            child: IconTheme(
-              data: IconThemeData(color: Colors.white),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.undo),
-                    onPressed: _note.currentPage.lines.isNotEmpty
-                        ? () {
-                            _note.currentPage.undo();
-                            _note.notifyListeners();
-                          }
-                        : null,
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.redo),
-                    onPressed: _note.currentPage.redoableLines.isNotEmpty
-                        ? () {
-                            _note.currentPage.redo();
-                            _note.notifyListeners();
-                          }
-                        : null,
-                  ),
-                  Text(
-                    _note.pageStateDisplay,
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  IconButton(
-                    icon: Icon(_note.isPlaying ? Icons.stop : Icons.play_arrow),
-                    onPressed: () => _note.play(),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.arrow_left),
-                    onPressed: () => _note.backPage(),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.arrow_right),
-                    onPressed: () => _note.pushPageAndCreate(),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.edit),
-                    onPressed: () {},
-                  ),
-                ],
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  icon: Icon(Icons.undo),
+                  onPressed: _note.currentPage.lines.isNotEmpty
+                      ? () {
+                          _note.currentPage.undo();
+                          _note.notifyListeners();
+                        }
+                      : null,
+                ),
+                IconButton(
+                  icon: Icon(Icons.redo),
+                  onPressed: _note.currentPage.redoableLines.isNotEmpty
+                      ? () {
+                          _note.currentPage.redo();
+                          _note.notifyListeners();
+                        }
+                      : null,
+                ),
+                Text(_note.pageStateDisplay),
+                IconButton(
+                  icon: Icon(_note.isPlaying ? Icons.stop : Icons.play_arrow),
+                  onPressed: () => _note.play(),
+                ),
+                IconButton(
+                  icon: Icon(Icons.arrow_left),
+                  onPressed: () => _note.backPage(),
+                ),
+                IconButton(
+                  icon: Icon(Icons.arrow_right),
+                  onPressed: () => _note.pushPageAndCreate(),
+                ),
+                IconButton(
+                  icon: Icon(Icons.edit),
+                  onPressed: () {},
+                ),
+              ],
             ),
           ),
         ),

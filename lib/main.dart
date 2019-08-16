@@ -33,8 +33,7 @@ class MyApp extends StatelessWidget {
           '/': (BuildContext context) => EditScene(),
         },
         theme: ThemeData(
-          primaryColor: Colors.pink[800],
-          accentColor: Colors.pink[400],
+          primaryColor: Color(0xFFEEEEEE),
         ),
       ),
     );
