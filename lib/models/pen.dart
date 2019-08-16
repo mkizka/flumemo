@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class PenModel extends ChangeNotifier {
-  Color _color = Colors.black;
+  Color _color = Colors.primaries[0];
   double _width = 3;
 
-  get color => _color;
+  Color get color => _color;
 
   set color(Color color) {
     _color = color;

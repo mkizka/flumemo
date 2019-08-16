@@ -22,8 +22,20 @@ class EditScene extends StatelessWidget {
         appBar: AppBar(
           actions: [
             IconButton(
+              icon: Icon(Icons.palette),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) => AlertDialog(
+                    title: Text('ペン'),
+                    content: PenForm(),
+                  ),
+                );
+              },
+            ),
+            IconButton(
               icon: Icon(Icons.settings),
-              onPressed: () async {
+              onPressed: () {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) => AlertDialog(

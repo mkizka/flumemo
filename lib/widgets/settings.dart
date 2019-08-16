@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_colorpicker/block_picker.dart';
+import 'package:flutter_colorpicker/utils.dart';
 
 import '../models/pen.dart';
 import '../models/note.dart';
@@ -45,6 +47,42 @@ class SettingsForm extends StatelessWidget {
             onChanged: (double value) => _note.fps = value.toInt(),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class PenForm extends StatelessWidget {
+  static textColor(Color color) {
+    return useWhiteForeground(color) ? Colors.white : Colors.black;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final PenModel _pen = Provider.of<PenModel>(context);
+
+    return SingleChildScrollView(
+      child: Container(
+        child: Column(
+          children: [
+            Row(
+              children: [
+                FlatButton(
+                  child: Icon(Icons.edit),
+                  textColor: textColor(_pen.color),
+                  color: _pen.color,
+                  onPressed: () {},
+                ),
+              ],
+            ),
+            SizedBox(height: 20),
+            BlockPicker(
+              availableColors: Colors.primaries,
+              pickerColor: _pen.color,
+              onColorChanged: (Color value) => _pen.color = value,
+            ),
+          ],
+        ),
       ),
     );
   }
