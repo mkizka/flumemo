@@ -6,7 +6,6 @@ import 'models/note.dart';
 import 'models/config.dart';
 import 'models/twitter.dart';
 import 'scenes/edit.dart';
-import 'scenes/menu.dart';
 
 void main() => runApp(MyApp());
 
@@ -32,7 +31,6 @@ class MyApp extends StatelessWidget {
         initialRoute: '/',
         routes: {
           '/': (BuildContext context) => EditScene(),
-          '/menu': (BuildContext context) => MenuScene()
         },
         theme: ThemeData(
           primaryColor: Colors.pink[800],

@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 
 import '../models/note.dart';
 import '../widgets/sketcher.dart';
+import '../widgets/tweeter.dart';
+import '../widgets/settings.dart';
 
 class EditScene extends StatelessWidget {
   final GlobalKey _sketcherKey = GlobalKey();
@@ -12,20 +14,42 @@ class EditScene extends StatelessWidget {
     final NoteModel _note = Provider.of<NoteModel>(context);
     _note.context = _sketcherKey.currentContext;
 
+    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
     return SafeArea(
       child: Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
           actions: [
-            PopupMenuButton<String>(
-              onSelected: (value) {},
-              itemBuilder: (BuildContext context) {
-                return ['1', '2', '3'].map((String choice) {
-                  return PopupMenuItem<String>(
-                    value: choice,
-                    child: Text(choice),
+            IconButton(
+              icon: Icon(Icons.settings),
+              onPressed: () async {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) => AlertDialog(
+                    title: Text("設定"),
+                    content: SettingsForm(),
+                  ),
+                );
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.file_upload),
+              onPressed: () async {
+                var result = await showDialog(
+                  context: context,
+                  builder: (BuildContext context) => AlertDialog(
+                    title: Text("プレビュ－"),
+                    content: TweetForm(),
+                  ),
+                );
+                if (result != null) {
+                  _scaffoldKey.currentState.showSnackBar(
+                    SnackBar(
+                      content: Text(result.toString()),
+                    ),
                   );
-                }).toList();
+                }
               },
             ),
           ],
@@ -38,6 +62,7 @@ class EditScene extends StatelessWidget {
             child: IconTheme(
               data: IconThemeData(color: Colors.white),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   IconButton(
                     icon: Icon(Icons.undo),
@@ -57,27 +82,25 @@ class EditScene extends StatelessWidget {
                           }
                         : null,
                   ),
-                  IconButton(
-                    icon: Icon(Icons.arrow_left),
-                    onPressed: () => _note.backPage(),
+                  Text(
+                    _note.pageStateDisplay,
+                    style: TextStyle(color: Colors.white),
                   ),
                   IconButton(
                     icon: Icon(_note.isPlaying ? Icons.stop : Icons.play_arrow),
                     onPressed: () => _note.play(),
                   ),
                   IconButton(
+                    icon: Icon(Icons.arrow_left),
+                    onPressed: () => _note.backPage(),
+                  ),
+                  IconButton(
                     icon: Icon(Icons.arrow_right),
                     onPressed: () => _note.pushPageAndCreate(),
                   ),
-                  Container(
-                    width: 50,
-                    child: FlatButton(
-                      padding: EdgeInsets.zero,
-                      child: Text(
-                        _note.pageStateDisplay,
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
+                  IconButton(
+                    icon: Icon(Icons.edit),
+                    onPressed: () {},
                   ),
                 ],
               ),
