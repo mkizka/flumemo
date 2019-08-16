@@ -19,11 +19,10 @@ class _TweetFormState extends State<TweetForm> {
   @override
   Widget build(BuildContext context) {
     TwitterModel _twitter = Provider.of<TwitterModel>(context);
-    ConfigModel _config = Provider.of<ConfigModel>(context);
     NoteModel _note = Provider.of<NoteModel>(context);
 
     if (file == null) {
-      Painter(_note, _config).writeGif().then((gif) {
+      Painter(_note).writeGif().then((gif) {
         setState(() {
           file = gif;
         });

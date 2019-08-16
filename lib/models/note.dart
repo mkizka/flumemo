@@ -106,7 +106,14 @@ class Line {
 
   Line(this.paint);
 
-  getOnionPaint(int onionIndex) {
+  Paint getPaint() {
+    return Paint()
+        ..strokeWidth = paint.strokeWidth
+        ..strokeCap = paint.strokeCap
+        ..color = paint.color;
+  }
+
+  Paint getOnionPaint(int onionIndex) {
     int index = -(onionIndex + 1);
     return Paint()
       ..strokeWidth = paint.strokeWidth

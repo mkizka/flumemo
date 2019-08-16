@@ -5,6 +5,7 @@ import '../models/note.dart';
 import '../widgets/sketcher.dart';
 import '../widgets/tweeter.dart';
 import '../widgets/settings.dart';
+import '../widgets/timeline.dart';
 
 class EditScene extends StatelessWidget {
   final GlobalKey _sketcherKey = GlobalKey();
@@ -21,6 +22,18 @@ class EditScene extends StatelessWidget {
         key: _scaffoldKey,
         appBar: AppBar(
           actions: [
+            IconButton(
+              icon: Icon(Icons.layers),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) => AlertDialog(
+                    title: Text('タイムライン'),
+                    content: Timeline(),
+                  ),
+                );
+              },
+            ),
             IconButton(
               icon: Icon(Icons.palette),
               onPressed: () {

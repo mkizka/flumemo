@@ -41,7 +41,7 @@ class Sketcher extends StatelessWidget {
       onPanDown: _onDragStart,
       onPanUpdate: _onDragUpdate,
       child: CustomPaint(
-        painter: Painter(_note, _config),
+        painter: Painter(_note, onionRange: _config.onionRange),
         child: ConstrainedBox(
           constraints: BoxConstraints.expand(),
         ),
@@ -51,12 +51,21 @@ class Sketcher extends StatelessWidget {
 }
 
 class Painter extends CustomPainter {
-  final NoteModel _note;
-  final ConfigModel _config;
+  final NoteModel note;
+  final int onionRange;
+  int pageIndex;
+  double sizeRate;
 
-  Painter(this._note, this._config);
+  Painter(
+    this.note, {
+    this.pageIndex,
+    this.onionRange = 0,
+    this.sizeRate = 1.0,
+  }) {
+    if (this.pageIndex == null) this.pageIndex = this.note.pageIndex;
+  }
 
-  Size get size => _note.context.size;
+  Size get size => note.context.size;
 
   @override
   bool shouldRepaint(Painter oldDelegate) {
@@ -64,16 +73,13 @@ class Painter extends CustomPainter {
   }
 
   void _paintOnion(Canvas canvas) {
-    if (_config.isReady && !_note.isPlaying) {
-      List<int> onionIndexList = List.generate(
-        _config.onionRange,
-        (int i) => -(i + 1),
-      );
+    if (!note.isPlaying) {
+      List<int> onionIndexList = List.generate(onionRange, (int i) => -(i + 1));
 
       onionIndexList.reversed.forEach((int onionIndex) {
-        if (_note.pageIndex + onionIndex < 0) return;
+        if (note.pageIndex + onionIndex < 0) return;
 
-        _note.getRelativePage(onionIndex).lines.forEach((Line line) {
+        note.getRelativePage(onionIndex).lines.forEach((Line line) {
           canvas.drawPoints(
             PointMode.polygon,
             line.points,
@@ -97,8 +103,16 @@ class Painter extends CustomPainter {
 
   void paint(Canvas canvas, Size size) {
     _paintOnion(canvas);
-    _note.currentPage.lines.forEach((Line line) {
-      canvas.drawPoints(PointMode.polygon, line.points, line.paint);
+    note.pages[pageIndex].lines.forEach((Line line) {
+      List<Offset> scaledPoints = [];
+      for (var point in line.points) {
+        Offset scaledPoint = Offset(point.dx * sizeRate, point.dy * sizeRate);
+        scaledPoints.add(scaledPoint);
+      }
+
+      Paint scaledPaint = line.getPaint()..strokeWidth *= sizeRate;
+
+      canvas.drawPoints(PointMode.polygon, scaledPoints, scaledPaint);
     });
   }
 
@@ -130,10 +144,10 @@ class Painter extends CustomPainter {
 
     Directory('${tempDir.path}/$uniqueId').createSync();
 
-    for (int i = 0; i < _note.pages.length; i++) {
+    for (int i = 0; i < note.pages.length; i++) {
       await save(
         '${tempDir.path}/$uniqueId/${i.toString().padLeft(3, '0')}.png',
-        _note.pages[i],
+        note.pages[i],
       );
     }
 
@@ -146,7 +160,7 @@ class Painter extends CustomPainter {
 
     String arguments2 = '' +
         '-f image2 ' +
-        '-r ${_note.fps.toString()} ' +
+        '-r ${note.fps.toString()} ' +
         '-i "${tempDir.path}/$uniqueId/%03d.png" ' +
         '-i "${tempDir.path}/$uniqueId/palette.png" ' +
         '-filter_complex paletteuse ' +
