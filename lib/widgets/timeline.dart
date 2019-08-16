@@ -17,14 +17,48 @@ class Timeline extends StatelessWidget {
     return Container(
       height: scaledSize(size, 0.8).height,
       width: scaledSize(size, 0.8).width,
-      child: ListView.builder(
-        itemBuilder: (BuildContext context, int index) {
-          return CustomPaint(
-            size: scaledSize(size, 0.3),
-            painter: Painter(_note, pageIndex: index, sizeRate: 0.3),
-          );
-        },
-        itemCount: _note.pages.length,
+      child: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemBuilder: (BuildContext context, int index) {
+                return Container(
+                  color: index == _note.pageIndex
+                      ? Colors.black.withOpacity(0.1)
+                      : Colors.white,
+                  child: ListTile(
+                    leading: Text((index + 1).toString()),
+                    title: CustomPaint(
+                      size: scaledSize(size, 0.15),
+                      painter: Painter(_note, pageIndex: index, sizeRate: 0.15),
+                    ),
+                    onTap: () => _note.setPage(index),
+                  ),
+                );
+              },
+              itemCount: _note.pages.length,
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              FlatButton(
+                child: Text('削除'),
+                onPressed: _note.pages.length > 1
+                    ? () => _note.deletePage(_note.pageIndex)
+                    : null,
+              ),
+              FlatButton(
+                child: Text('追加'),
+                onPressed: () => _note.insertPage(_note.pageIndex),
+              ),
+              FlatButton(
+                child: Text('複製'),
+                onPressed: () => _note.copyPage(_note.pageIndex),
+              ),
+            ],
+          )
+        ],
       ),
     );
   }

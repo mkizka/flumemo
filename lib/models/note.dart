@@ -57,6 +57,29 @@ class NoteModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setPage(int index) {
+    pageIndex = index;
+    notifyListeners();
+  }
+
+  void deletePage(int index) {
+    pages.removeAt(index);
+    if (index > pages.length - 1) {
+      pageIndex = pages.length - 1;
+    }
+    notifyListeners();
+  }
+
+  void insertPage(int index) {
+    pages.insert(index, Page());
+    notifyListeners();
+  }
+
+  void copyPage(int index) {
+    pages.insert(index, Page.from(pages[index]));
+    notifyListeners();
+  }
+
   Page getRelativePage(int i) => pages[pageIndex + i];
 
   Page get currentPage => getRelativePage(0);
@@ -69,6 +92,12 @@ class NoteModel extends ChangeNotifier {
 class Page {
   List<Line> lines = [];
   List<Line> redoableLines = [];
+
+  static Page from(Page other) {
+    return Page()
+      ..lines = other.lines
+      ..redoableLines = other.redoableLines;
+  }
 
   void addLine(PenModel pen, Offset point) {
     lines.add(Line(pen.paint)..points.add(point));
@@ -108,9 +137,9 @@ class Line {
 
   Paint getPaint() {
     return Paint()
-        ..strokeWidth = paint.strokeWidth
-        ..strokeCap = paint.strokeCap
-        ..color = paint.color;
+      ..strokeWidth = paint.strokeWidth
+      ..strokeCap = paint.strokeCap
+      ..color = paint.color;
   }
 
   Paint getOnionPaint(int onionIndex) {
