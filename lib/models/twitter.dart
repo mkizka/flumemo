@@ -23,9 +23,9 @@ class TwitterModel extends ChangeNotifier {
 
   set accessSecret(String value) => _prefs.setString('accessSecret', value);
 
-  String get username => _prefs.getString('usernmae') ?? '';
+  String get username => _prefs.getString('username') ?? '';
 
-  set username(String value) => _prefs.setString('accessSecret', value);
+  set username(String value) => _prefs.setString('username', value);
 
   String get userId => _prefs.getString('userId') ?? '';
 
