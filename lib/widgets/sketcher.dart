@@ -21,13 +21,16 @@ class Sketcher extends StatelessWidget {
     final PenModel _pen = Provider.of(context);
     final ConfigModel _config = Provider.of<ConfigModel>(context);
 
+    Paint paint = _pen.paint;
+    if (!_pen.isActive) paint.color = _note.backgroundColor;
+
     bool isInSketcher(Offset offset) {
       return 0 <= offset.dy && offset.dy <= context.size.height;
     }
 
     void _onDragStart(DragDownDetails details) {
       if (!isInSketcher(details.localPosition)) return;
-      _note.currentPage.addLine(_pen, details.localPosition);
+      _note.currentPage.addLine(paint, details.localPosition);
       _note.notifyListeners();
     }
 

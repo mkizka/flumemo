@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/note.dart';
+import '../models/pen.dart';
 import '../widgets/sketcher.dart';
 import '../widgets/tweeter.dart';
 import '../widgets/settings.dart';
@@ -14,6 +15,7 @@ class EditScene extends StatelessWidget {
   Widget build(BuildContext context) {
     final NoteModel _note = Provider.of<NoteModel>(context);
     _note.context = _sketcherKey.currentContext;
+    final PenModel _pen = Provider.of<PenModel>(context);
 
     final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -22,6 +24,10 @@ class EditScene extends StatelessWidget {
         key: _scaffoldKey,
         appBar: AppBar(
           actions: [
+            IconButton(
+              icon: Icon(_note.isPlaying ? Icons.stop : Icons.play_arrow),
+              onPressed: () => _note.play(),
+            ),
             IconButton(
               icon: Icon(Icons.layers),
               onPressed: () {
@@ -105,10 +111,9 @@ class EditScene extends StatelessWidget {
                         }
                       : null,
                 ),
-                Text(_note.pageStateDisplay),
-                IconButton(
-                  icon: Icon(_note.isPlaying ? Icons.stop : Icons.play_arrow),
-                  onPressed: () => _note.play(),
+                FlatButton(
+                  child: Text(_note.pageStateDisplay),
+                  disabledTextColor: Colors.black,
                 ),
                 IconButton(
                   icon: Icon(Icons.arrow_left),
@@ -118,9 +123,11 @@ class EditScene extends StatelessWidget {
                   icon: Icon(Icons.arrow_right),
                   onPressed: () => _note.pushPageAndCreate(),
                 ),
-                IconButton(
+                FlatButton.icon(
                   icon: Icon(Icons.edit),
-                  onPressed: () {},
+                  label: Text(_pen.isActive ? '1' : '2'),
+                  textColor: _pen.isActive ? _pen.color : _note.backgroundColor,
+                  onPressed: () => _pen.isActive = !_pen.isActive,
                 ),
               ],
             ),

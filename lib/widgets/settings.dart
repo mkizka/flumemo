@@ -72,8 +72,9 @@ class PenForm extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.only(left: 5, right: 5),
                   color: _pen.isActive ? Colors.grey.shade400 : null,
-                  child: FlatButton(
-                    child: Icon(Icons.edit),
+                  child: FlatButton.icon(
+                    icon: Icon(Icons.edit),
+                    label: Text('1'),
                     textColor: textColor(_pen.color),
                     color: _pen.color,
                     onPressed: () => _pen.isActive = true,
@@ -82,8 +83,9 @@ class PenForm extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.only(left: 5, right: 5),
                   color: !_pen.isActive ? Colors.grey.shade400 : null,
-                  child: FlatButton(
-                    child: Icon(Icons.mode_edit),
+                  child: FlatButton.icon(
+                    label: Text('2'),
+                    icon: Icon(Icons.mode_edit),
                     textColor: textColor(_note.backgroundColor),
                     color: _note.backgroundColor,
                     onPressed: () => _pen.isActive = false,

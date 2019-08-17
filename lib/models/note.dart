@@ -120,8 +120,8 @@ class Page {
       ..redoableLines = other.redoableLines;
   }
 
-  void addLine(PenModel pen, Offset point) {
-    lines.add(Line(pen.paint)..points.add(point));
+  void addLine(Paint paint, Offset point) {
+    lines.add(Line(paint)..points.add(point));
     redoableLines.clear();
   }
 
