@@ -9,12 +9,13 @@ import '../widgets/settings.dart';
 import '../widgets/timeline.dart';
 
 class EditScene extends StatelessWidget {
+  final GlobalKey _sketcherKey = GlobalKey();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     final NoteModel _note = Provider.of<NoteModel>(context);
     final PenModel _pen = Provider.of<PenModel>(context);
-
-    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
     return SafeArea(
       child: Scaffold(
@@ -23,7 +24,13 @@ class EditScene extends StatelessWidget {
           actions: [
             IconButton(
               icon: Icon(_note.isPlaying ? Icons.stop : Icons.play_arrow),
-              onPressed: () => _note.play(),
+              onPressed: () {
+                // 再生時には何度も再描画されるので範囲をSketcher()に限定するため
+                final NoteModel note = Provider.of<NoteModel>(
+                  _sketcherKey.currentContext,
+                );
+                note.play();
+              },
             ),
             IconButton(
               icon: Icon(Icons.layers),
@@ -133,6 +140,7 @@ class EditScene extends StatelessWidget {
         body: Column(
           children: <Widget>[
             Expanded(
+              key: _sketcherKey,
               child: Sketcher(),
             ),
           ],
