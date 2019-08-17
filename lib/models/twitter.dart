@@ -23,6 +23,14 @@ class TwitterModel extends ChangeNotifier {
 
   set accessSecret(String value) => _prefs.setString('accessSecret', value);
 
+  String get username => _prefs.getString('usernmae') ?? '';
+
+  set username(String value) => _prefs.setString('accessSecret', value);
+
+  String get userId => _prefs.getString('userId') ?? '';
+
+  set userId(String value) => _prefs.setString('userId', value);
+
   TwitterModel() {
     SharedPreferences.getInstance().then((instance) {
       _prefs = instance;
@@ -51,6 +59,8 @@ class TwitterModel extends ChangeNotifier {
       case TwitterLoginStatus.loggedIn:
         accessToken = result.session.token;
         accessSecret = result.session.secret;
+        userId = result.session.userId;
+        username = result.session.username;
         break;
       case TwitterLoginStatus.cancelledByUser:
         throw Exception('ログインがキャンセルされました');
@@ -59,6 +69,14 @@ class TwitterModel extends ChangeNotifier {
         throw Exception('ログイン処理でエラーが発生しました');
         break;
     }
+  }
+
+  void logout() {
+    accessToken = null;
+    accessSecret = null;
+    username = null;
+    userId = null;
+    notifyListeners();
   }
 
   oauth1.Client get client {
