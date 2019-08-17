@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 
 import '../models/twitter.dart';
 import '../models/note.dart';
-import '../models/config.dart';
 import '../widgets/sketcher.dart';
 
 class TweetForm extends StatefulWidget {
@@ -20,6 +19,22 @@ class _TweetFormState extends State<TweetForm> {
   Widget build(BuildContext context) {
     TwitterModel _twitter = Provider.of<TwitterModel>(context);
     NoteModel _note = Provider.of<NoteModel>(context);
+
+    void loginAndTweet() {
+      _twitter.login().then((_) {
+        _twitter.tweet(text, file).then((result) {
+          if (result.isSuccess) {
+            Navigator.pop(context, 'ツイートしました');
+          } else {
+            Navigator.pop(context, 'ツイートに失敗しました');
+          }
+          print(result.response.statusCode);
+          print(result.response.hashCode);
+        });
+      }).catchError((e) {
+        Navigator.pop(context, e.message);
+      });
+    }
 
     if (file == null) {
       Painter(_note).writeGif().then((gif) {
@@ -54,23 +69,38 @@ class _TweetFormState extends State<TweetForm> {
           ),
           RaisedButton(
             child: Text(
-              'ツイート',
+              _twitter.isAuthenticated ? 'ツイート' : 'ログインしてツイート',
               style: TextStyle(color: Colors.white),
             ),
             color: Colors.lightBlueAccent,
-            onPressed: () {
-              _twitter.login().then((_) {
-                _twitter.tweet(text, file).then((result) {
-                  if (result.isSuccess) {
-                    Navigator.pop(context, 'ツイートしました');
-                  } else {
-                    Navigator.pop(context, 'ツイートに失敗しました');
-                  }
-                });
-              }).catchError((e) {
-                Navigator.pop(context, e.message);
-              });
-            },
+            onPressed: () => loginAndTweet(),
+          ),
+          Visibility(
+            visible: _twitter.isAuthenticated,
+            child: InkWell(
+              child: Text(
+                '@${_twitter.username}からログアウト',
+                style: TextStyle(
+                  color: Colors.lightBlue,
+                  fontSize: 14,
+                  decoration: TextDecoration.underline,
+                ),
+              ),
+              onTap: () => _twitter.logout(),
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.all(10),
+            child: Text(
+              'ツイートにはツイッターアカウントの書き込み権限を使用します',
+              style: TextStyle(
+                fontSize: 12,
+              ),
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.all(10),
+            child: Text('プレビュー'),
           ),
           Image.file(file, height: 200)
         ],
