@@ -1,4 +1,4 @@
-package flumemo.flumemo;
+package net.flumemo.android;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;
