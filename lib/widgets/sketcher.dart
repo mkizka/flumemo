@@ -21,6 +21,8 @@ class Sketcher extends StatelessWidget {
     final PenModel _pen = Provider.of(context);
     final ConfigModel _config = Provider.of<ConfigModel>(context);
 
+    _note.context = context;
+
     Paint paint = _pen.paint;
     if (!_pen.isActive) paint.color = _note.backgroundColor;
 

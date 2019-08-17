@@ -9,12 +9,9 @@ import '../widgets/settings.dart';
 import '../widgets/timeline.dart';
 
 class EditScene extends StatelessWidget {
-  final GlobalKey _sketcherKey = GlobalKey();
-
   @override
   Widget build(BuildContext context) {
     final NoteModel _note = Provider.of<NoteModel>(context);
-    _note.context = _sketcherKey.currentContext;
     final PenModel _pen = Provider.of<PenModel>(context);
 
     final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -136,7 +133,6 @@ class EditScene extends StatelessWidget {
         body: Column(
           children: <Widget>[
             Expanded(
-              key: _sketcherKey,
               child: Sketcher(),
             ),
           ],
