@@ -39,16 +39,15 @@ List<PopupChoice> _popupChoiceList = [
 
 class EditScene extends StatelessWidget {
   final GlobalKey _sketcherKey = GlobalKey();
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     final NoteModel _note = Provider.of<NoteModel>(context);
     final PenModel _pen = Provider.of<PenModel>(context);
+    BuildContext _scaffoldContext;
 
     return SafeArea(
       child: Scaffold(
-        key: _scaffoldKey,
         appBar: AppBar(
           title: Text('Flumemo'),
           actions: [
@@ -102,7 +101,7 @@ class EditScene extends StatelessWidget {
                         ),
                       );
                       if (result != null) {
-                        _scaffoldKey.currentState.showSnackBar(
+                        Scaffold.of(_scaffoldContext).showSnackBar(
                           SnackBar(
                             content: Text(result.toString()),
                           ),
@@ -192,14 +191,12 @@ class EditScene extends StatelessWidget {
             ),
           ),
         ),
-        body: Column(
-          children: <Widget>[
-            Expanded(
-              key: _sketcherKey,
-              child: Sketcher(),
-            ),
-          ],
-        ),
+        body: Builder(builder: (BuildContext context) {
+          _scaffoldContext = context;
+          return Sketcher(
+            key: _sketcherKey,
+          );
+        }),
       ),
     );
   }

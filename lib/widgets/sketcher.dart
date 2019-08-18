@@ -15,6 +15,8 @@ import '../models/pen.dart';
 import '../models/config.dart';
 
 class Sketcher extends StatelessWidget {
+  Sketcher({Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final NoteModel _note = Provider.of<NoteModel>(context);
