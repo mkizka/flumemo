@@ -14,6 +14,7 @@ class TweetForm extends StatefulWidget {
 class _TweetFormState extends State<TweetForm> {
   File file;
   String text = '';
+  bool isTweeting = false;
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +22,9 @@ class _TweetFormState extends State<TweetForm> {
     NoteModel _note = Provider.of<NoteModel>(context);
 
     void loginAndTweet() {
+      setState(() {
+        isTweeting = true;
+      });
       _twitter.login().then((_) {
         _twitter.tweet(text, file).then((result) {
           if (result.isSuccess) {
@@ -28,8 +32,6 @@ class _TweetFormState extends State<TweetForm> {
           } else {
             Navigator.pop(context, 'ツイートに失敗しました');
           }
-          print(result.response.statusCode);
-          print(result.response.hashCode);
         });
       }).catchError((e) {
         Navigator.pop(context, e.message);
@@ -47,6 +49,7 @@ class _TweetFormState extends State<TweetForm> {
         child: Column(
           children: [
             Text('エンコード中…'),
+            SizedBox(height: 40),
             Center(
               child: CircularProgressIndicator(),
             ),
@@ -68,10 +71,12 @@ class _TweetFormState extends State<TweetForm> {
             onChanged: (String value) => text = value,
           ),
           RaisedButton(
-            child: Text(
-              _twitter.isAuthenticated ? 'ツイート' : 'ログインしてツイート',
-              style: TextStyle(color: Colors.white),
-            ),
+            child: !isTweeting
+                ? Text(
+                    _twitter.isAuthenticated ? 'ツイート' : 'ログインしてツイート',
+                    style: TextStyle(color: Colors.white),
+                  )
+                : CircularProgressIndicator(),
             color: Colors.lightBlueAccent,
             onPressed: () => loginAndTweet(),
           ),
@@ -99,7 +104,7 @@ class _TweetFormState extends State<TweetForm> {
             ),
           ),
           Container(
-            padding: EdgeInsets.all(10),
+            padding: EdgeInsets.only(bottom: 10),
             child: Text('プレビュー'),
           ),
           Image.file(file, height: 200)
