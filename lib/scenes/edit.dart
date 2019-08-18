@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:share/share.dart';
 
 import '../models/note.dart';
 import '../models/pen.dart';
@@ -7,6 +8,34 @@ import '../widgets/sketcher.dart';
 import '../widgets/tweeter.dart';
 import '../widgets/settings.dart';
 import '../widgets/timeline.dart';
+
+class PopupChoice {
+  final String title;
+  final Widget content;
+  final Function onTap;
+
+  PopupChoice(this.title, {this.onTap, this.content});
+
+  void onSelected(BuildContext context) {
+    if (onTap == null) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: Text(title),
+          content: content,
+        ),
+      );
+    } else {
+      onTap();
+    }
+  }
+}
+
+List<PopupChoice> _popupChoiceList = [
+  PopupChoice('Flumemoをシェア', onTap: () {
+    Share.share('Flumemo https://github.com/Compeito/flumemo/releases');
+  }),
+];
 
 class EditScene extends StatelessWidget {
   final GlobalKey _sketcherKey = GlobalKey();
@@ -21,6 +50,7 @@ class EditScene extends StatelessWidget {
       child: Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
+          title: Text('Flumemo'),
           actions: [
             IconButton(
               icon: Icon(Icons.palette),
@@ -81,6 +111,17 @@ class EditScene extends StatelessWidget {
                     }
                   : null,
             ),
+            PopupMenuButton<PopupChoice>(
+              onSelected: (PopupChoice choice) => choice.onSelected(context),
+              itemBuilder: (BuildContext context) {
+                return _popupChoiceList.map((item) {
+                  return PopupMenuItem<PopupChoice>(
+                    value: item,
+                    child: Text(item.title),
+                  );
+                }).toList();
+              },
+            )
           ],
         ),
         bottomNavigationBar: BottomAppBar(
