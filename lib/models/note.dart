@@ -15,7 +15,7 @@ class NoteModel extends ChangeNotifier {
   int pageIndex = 0;
   bool isPlaying = false;
   Color _backgroundColor = backgroundColorList[0];
-  int _fps = 4;
+  int _fps = 8;
   BuildContext context;
 
   int get fps => _fps;

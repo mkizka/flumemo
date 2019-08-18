@@ -8,7 +8,7 @@ List<Color> penColorList = [
 
 class PenModel extends ChangeNotifier {
   Color _color = penColorList[0];
-  double _width = 3;
+  double _width = 2;
   bool _isActive = true;
 
   Color get color => _color;
