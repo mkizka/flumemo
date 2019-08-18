@@ -19,15 +19,6 @@ class SettingsForm extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
-          Text('ペンの太さ'),
-          Slider(
-            label: _pen.width.toString(),
-            min: 1,
-            max: 10,
-            divisions: 9,
-            value: _pen.width,
-            onChanged: (double value) => _pen.width = value,
-          ),
           Text('透過枚数'),
           Slider(
             label: _config.onionRange.toString(),
@@ -74,7 +65,7 @@ class PenForm extends StatelessWidget {
                   color: _pen.isActive ? Colors.grey.shade400 : null,
                   child: FlatButton.icon(
                     icon: Icon(Icons.edit),
-                    label: Text('1'),
+                    label: Text('1 メイン'),
                     textColor: textColor(_pen.color),
                     color: _pen.color,
                     onPressed: () => _pen.isActive = true,
@@ -84,7 +75,7 @@ class PenForm extends StatelessWidget {
                   padding: EdgeInsets.only(left: 5, right: 5),
                   color: !_pen.isActive ? Colors.grey.shade400 : null,
                   child: FlatButton.icon(
-                    label: Text('2'),
+                    label: Text('2 背景'),
                     icon: Icon(Icons.mode_edit),
                     textColor: textColor(_note.backgroundColor),
                     color: _note.backgroundColor,
@@ -94,23 +85,32 @@ class PenForm extends StatelessWidget {
               ],
             ),
             SizedBox(height: 20),
-            Visibility(
-              visible: _pen.isActive,
-              child: BlockPicker(
-                availableColors: penColorList,
-                pickerColor: _pen.color,
-                onColorChanged: (Color value) => _pen.color = value,
-              ),
-            ),
-            Visibility(
-              visible: !_pen.isActive,
-              child: BlockPicker(
-                availableColors: backgroundColorList,
-                pickerColor: _note.backgroundColor,
-                onColorChanged: (Color value) {
-                  _note.backgroundColor = value;
-                },
-              ),
+//            Visibility(
+//              visible: _pen.isActive,
+//              child: BlockPicker(
+//                availableColors: penColorList,
+//                pickerColor: _pen.color,
+//                onColorChanged: (Color value) => _pen.color = value,
+//              ),
+//            ),
+//            Visibility(
+//              visible: !_pen.isActive,
+//              child: BlockPicker(
+//                availableColors: backgroundColorList,
+//                pickerColor: _note.backgroundColor,
+//                onColorChanged: (Color value) {
+//                  _note.backgroundColor = value;
+//                },
+//              ),
+//            ),
+            Text('ペンの太さ'),
+            Slider(
+              label: _pen.width.toString(),
+              min: 1,
+              max: 10,
+              divisions: 9,
+              value: _pen.width,
+              onChanged: (double value) => _pen.width = value,
             ),
           ],
         ),
