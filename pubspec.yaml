@@ -29,6 +29,7 @@ dependencies:
   oauth1: ^1.0.4
   flutter_colorpicker: ^0.2.6
   flutter_launcher_icons: ^0.7.2
+  share: ^0.6.2+1
 
 dev_dependencies:
   flutter_test:
