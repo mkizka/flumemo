@@ -23,28 +23,6 @@ class EditScene extends StatelessWidget {
         appBar: AppBar(
           actions: [
             IconButton(
-              icon: Icon(_note.isPlaying ? Icons.stop : Icons.play_arrow),
-              onPressed: () {
-                // 再生時には何度も再描画されるので範囲をSketcher()に限定するため
-                final NoteModel note = Provider.of<NoteModel>(
-                  _sketcherKey.currentContext,
-                );
-                note.play();
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.layers),
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) => AlertDialog(
-                    title: Text('タイムライン'),
-                    content: Timeline(),
-                  ),
-                );
-              },
-            ),
-            IconButton(
               icon: Icon(Icons.palette),
               onPressed: () {
                 showDialog(
@@ -55,6 +33,20 @@ class EditScene extends StatelessWidget {
                   ),
                 );
               },
+            ),
+            IconButton(
+              icon: Icon(Icons.layers),
+              onPressed: !_note.isPlaying
+                  ? () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                          title: Text('タイムライン'),
+                          content: Timeline(),
+                        ),
+                      );
+                    }
+                  : null,
             ),
             IconButton(
               icon: Icon(Icons.settings),
@@ -70,22 +62,24 @@ class EditScene extends StatelessWidget {
             ),
             IconButton(
               icon: Icon(Icons.file_upload),
-              onPressed: () async {
-                var result = await showDialog(
-                  context: context,
-                  builder: (BuildContext context) => AlertDialog(
-                    title: Text("プレビュ－"),
-                    content: TweetForm(),
-                  ),
-                );
-                if (result != null) {
-                  _scaffoldKey.currentState.showSnackBar(
-                    SnackBar(
-                      content: Text(result.toString()),
-                    ),
-                  );
-                }
-              },
+              onPressed: !_note.isPlaying
+                  ? () async {
+                      var result = await showDialog(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                          title: Text("プレビュ－"),
+                          content: TweetForm(),
+                        ),
+                      );
+                      if (result != null) {
+                        _scaffoldKey.currentState.showSnackBar(
+                          SnackBar(
+                            content: Text(result.toString()),
+                          ),
+                        );
+                      }
+                    }
+                  : null,
             ),
           ],
         ),
@@ -99,33 +93,53 @@ class EditScene extends StatelessWidget {
               children: [
                 IconButton(
                   icon: Icon(Icons.undo),
-                  onPressed: _note.currentPage.lines.isNotEmpty
-                      ? () {
-                          _note.currentPage.undo();
-                          _note.notifyListeners();
-                        }
-                      : null,
+                  onPressed:
+                      !_note.isPlaying && _note.currentPage.lines.isNotEmpty
+                          ? () {
+                              _note.currentPage.undo();
+                              _note.notifyListeners();
+                            }
+                          : null,
                 ),
                 IconButton(
                   icon: Icon(Icons.redo),
-                  onPressed: _note.currentPage.redoableLines.isNotEmpty
+                  onPressed: !_note.isPlaying &&
+                          _note.currentPage.redoableLines.isNotEmpty
                       ? () {
                           _note.currentPage.redo();
                           _note.notifyListeners();
                         }
                       : null,
                 ),
-                FlatButton(
-                  child: Text(_note.pageStateDisplay),
-                  disabledTextColor: Colors.black,
+                IconButton(
+                  icon: Icon(_note.isPlaying ? Icons.stop : Icons.play_arrow),
+                  onPressed: () {
+                    // 再生時には何度も再描画されるので範囲をSketcher()に限定するため
+                    final NoteModel note = Provider.of<NoteModel>(
+                      _sketcherKey.currentContext,
+                    );
+                    note.play();
+                  },
+                ),
+                Container(
+                  padding: EdgeInsets.all(10),
+                  child: Center(
+                    child: Text(
+                      _note.pageStateDisplay,
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
                 ),
                 IconButton(
                   icon: Icon(Icons.arrow_left),
-                  onPressed: () => _note.backPage(),
+                  onPressed: !_note.isPlaying ? () => _note.backPage() : null,
                 ),
                 IconButton(
                   icon: Icon(Icons.arrow_right),
-                  onPressed: () => _note.pushPageAndCreate(),
+                  onPressed:
+                      !_note.isPlaying ? () => _note.pushPageAndCreate() : null,
                 ),
                 FlatButton.icon(
                   icon: Icon(Icons.edit),

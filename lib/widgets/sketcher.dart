@@ -31,13 +31,13 @@ class Sketcher extends StatelessWidget {
     }
 
     void _onDragStart(DragDownDetails details) {
-      if (!isInSketcher(details.localPosition)) return;
+      if (_note.isPlaying || !isInSketcher(details.localPosition)) return;
       _note.currentPage.addLine(paint, details.localPosition);
       _note.notifyListeners();
     }
 
     void _onDragUpdate(DragUpdateDetails details) {
-      if (!isInSketcher(details.localPosition)) return;
+      if (_note.isPlaying || !isInSketcher(details.localPosition)) return;
       _note.currentPage.updateLine(details.localPosition);
       _note.notifyListeners();
     }
