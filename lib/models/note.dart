@@ -3,8 +3,6 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 
-import './pen.dart';
-
 List<Color> backgroundColorList = [
   Colors.lightBlueAccent,
   Colors.lightGreenAccent,
@@ -54,6 +52,7 @@ class NoteModel extends ChangeNotifier {
     if (pageIndex >= pages.length) {
       pageIndex = 0;
     }
+    currentPage.endLine();
     notifyListeners();
   }
 
@@ -62,6 +61,7 @@ class NoteModel extends ChangeNotifier {
     if (pageIndex >= pages.length) {
       pages.add(Page());
     }
+    currentPage.endLine();
     notifyListeners();
   }
 
@@ -125,8 +125,18 @@ class Page {
     redoableLines.clear();
   }
 
-  void updateLine(Offset point) {
-    lines.last.points.add(point);
+  void updateLine(Paint paint, Offset point) {
+    if (lines.isEmpty || lines.last.isFinished) {
+      addLine(paint, point);
+    } else {
+      lines.last.points.add(point);
+    }
+  }
+
+  void endLine() {
+    if (lines.isNotEmpty && !lines.last.isFinished) {
+      lines.last.points.add(null);
+    }
   }
 
   void undo() {
@@ -161,6 +171,14 @@ class Line {
       ..strokeWidth = paint.strokeWidth
       ..strokeCap = paint.strokeCap
       ..color = paint.color;
+  }
+
+  bool get isFinished => points.isNotEmpty && points.last == null;
+
+  List<Offset> get drawablePoints {
+    List<Offset> result = List.from(points);
+    if (isFinished) result.removeLast();
+    return result;
   }
 
   Paint getOnionPaint(int onionIndex) {

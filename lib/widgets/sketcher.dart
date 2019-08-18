@@ -31,14 +31,19 @@ class Sketcher extends StatelessWidget {
     }
 
     void _onDragStart(DragDownDetails details) {
-      if (_note.isPlaying || !isInSketcher(details.localPosition)) return;
+      if (!isInSketcher(details.localPosition)) return;
       _note.currentPage.addLine(paint, details.localPosition);
       _note.notifyListeners();
     }
 
     void _onDragUpdate(DragUpdateDetails details) {
-      if (_note.isPlaying || !isInSketcher(details.localPosition)) return;
-      _note.currentPage.updateLine(details.localPosition);
+      if (!isInSketcher(details.localPosition)) return;
+      _note.currentPage.updateLine(paint, details.localPosition);
+      _note.notifyListeners();
+    }
+
+    void _onDragEnd(DragEndDetails details) {
+      _note.currentPage.endLine();
       _note.notifyListeners();
     }
 
@@ -47,6 +52,7 @@ class Sketcher extends StatelessWidget {
       child: GestureDetector(
         onPanDown: _onDragStart,
         onPanUpdate: _onDragUpdate,
+        onPanEnd: _onDragEnd,
         child: CustomPaint(
           painter: Painter(_note, onionRange: _config.onionRange),
           child: ConstrainedBox(
@@ -90,7 +96,7 @@ class Painter extends CustomPainter {
         note.getRelativePage(onionIndex).lines.forEach((Line line) {
           canvas.drawPoints(
             PointMode.polygon,
-            line.points,
+            line.drawablePoints,
             line.getOnionPaint(onionIndex),
           );
         });
@@ -113,7 +119,7 @@ class Painter extends CustomPainter {
     _paintOnion(canvas);
     note.pages[pageIndex].lines.forEach((Line line) {
       List<Offset> scaledPoints = [];
-      for (var point in line.points) {
+      for (Offset point in line.drawablePoints) {
         Offset scaledPoint = Offset(point.dx * sizeRate, point.dy * sizeRate);
         scaledPoints.add(scaledPoint);
       }
@@ -130,7 +136,7 @@ class Painter extends CustomPainter {
 
     _paintBackground(canvas);
     page.lines.forEach((Line line) {
-      canvas.drawPoints(PointMode.polygon, line.points, line.paint);
+      canvas.drawPoints(PointMode.polygon, line.drawablePoints, line.paint);
     });
 
     Picture picture = recorder.endRecording();
