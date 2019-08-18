@@ -107,16 +107,21 @@ class Painter extends CustomPainter {
   void _paintBackground(Canvas canvas) {
     Path path = Path();
     path.moveTo(0, 0);
-    path.lineTo(size.width, 0);
-    path.lineTo(size.width, size.height);
-    path.lineTo(0, size.height);
+    path.lineTo(size.width * sizeRate, 0);
+    path.lineTo(size.width * sizeRate, size.height * sizeRate);
+    path.lineTo(0, size.height * sizeRate);
     path.close();
     Paint paint = Paint()..color = note.backgroundColor;
     canvas.drawPath(path, paint);
   }
 
   void paint(Canvas canvas, Size size) {
-    _paintOnion(canvas);
+    if (onionRange > 0) {
+      _paintOnion(canvas);
+    }
+    if (sizeRate != 1.0) {
+      _paintBackground(canvas);
+    }
     note.pages[pageIndex].lines.forEach((Line line) {
       List<Offset> scaledPoints = [];
       for (Offset point in line.drawablePoints) {
