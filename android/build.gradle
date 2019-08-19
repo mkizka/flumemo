@@ -29,5 +29,5 @@ task clean(type: Delete) {
 }
 
 ext {
-    flutterFFmpegPackage  = "full-gpl-lts"
+    flutterFFmpegPackage  = "min-lts"
 }

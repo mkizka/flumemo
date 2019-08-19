@@ -3,7 +3,7 @@ plugin_pods.map { |p|
 symlink = File.join('.symlinks', 'plugins', p[:name])
 File.symlink(p[:path], symlink)
 if p[:name] == 'flutter_ffmpeg'
-  pod p[:name]+'/full-gpl-lts', :path => File.join(symlink, 'ios')
+  pod p[:name]+'/min-lts', :path => File.join(symlink, 'ios')
 else
   pod p[:name], :path => File.join(symlink, 'ios')
 end
