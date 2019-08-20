@@ -33,7 +33,7 @@ class PopupChoice {
 
 List<PopupChoice> _popupChoiceList = [
   PopupChoice('Flumemoをシェア', onTap: () {
-    Share.share('Flumemo https://github.com/Compeito/flumemo/releases');
+    Share.share('#flumemo https://github.com/Compeito/flumemo/releases');
   }),
 ];
 

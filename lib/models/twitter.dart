@@ -130,7 +130,7 @@ class TwitterModel extends ChangeNotifier {
     var response4 = await client.post(
       'https://api.twitter.com/1.1/statuses/update.json',
       body: {
-        'status': text,
+        'status': text + ' #flumemo',
         'media_ids': mediaId,
       },
     );
