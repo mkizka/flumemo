@@ -120,9 +120,11 @@ class Page {
   List<Line> lines = [];
   List<Line> redoableLines = [];
 
-  static Page from(Page other) {
+  Page();
+
+  factory Page.from(Page other) {
     return Page()
-      ..lines = other.lines
+      ..lines = other.lines.map((Line l) => Line.from(l)).toList()
       ..redoableLines = other.redoableLines;
   }
 
@@ -171,6 +173,10 @@ class Line {
   ];
 
   Line(this.paint);
+
+  factory Line.from(Line other) {
+    return Line(other.getPaint())..points = other.points;
+  }
 
   Paint getPaint() {
     return Paint()
