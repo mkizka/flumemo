@@ -27,7 +27,6 @@ dependencies:
   flutter_ffmpeg: ^0.2.7
   uuid: ^2.0.1
   oauth1: ^1.0.4
-  flutter_colorpicker: ^0.2.6
   flutter_launcher_icons: ^0.7.2
   share: ^0.6.2+1
 

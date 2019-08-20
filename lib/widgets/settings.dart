@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_colorpicker/block_picker.dart';
-import 'package:flutter_colorpicker/utils.dart';
 
 import '../models/pen.dart';
 import '../models/note.dart';
@@ -44,7 +42,9 @@ class SettingsForm extends StatelessWidget {
 
 class PenForm extends StatelessWidget {
   static textColor(Color color) {
-    return useWhiteForeground(color) ? Colors.white : Colors.black;
+    return 1.05 / (color.computeLuminance() + 0.05) > 4.5
+        ? Colors.white
+        : Colors.black;
   }
 
   @override
@@ -84,24 +84,6 @@ class PenForm extends StatelessWidget {
               ],
             ),
             SizedBox(height: 20),
-//            Visibility(
-//              visible: _pen.isActive,
-//              child: BlockPicker(
-//                availableColors: penColorList,
-//                pickerColor: _pen.color,
-//                onColorChanged: (Color value) => _pen.color = value,
-//              ),
-//            ),
-//            Visibility(
-//              visible: !_pen.isActive,
-//              child: BlockPicker(
-//                availableColors: backgroundColorList,
-//                pickerColor: _note.backgroundColor,
-//                onColorChanged: (Color value) {
-//                  _note.backgroundColor = value;
-//                },
-//              ),
-//            ),
             Text('ペンの太さ'),
             Slider(
               label: _pen.width.toString(),
