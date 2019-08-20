@@ -11,28 +11,45 @@ import '../widgets/timeline.dart';
 
 class PopupChoice {
   final String title;
-  final Widget content;
+  final Function dialog;
   final Function onTap;
 
-  PopupChoice(this.title, {this.onTap, this.content});
+  PopupChoice(this.title, {this.dialog, this.onTap});
 
   void onSelected(BuildContext context) {
     if (onTap == null) {
       showDialog(
         context: context,
-        builder: (BuildContext context) => AlertDialog(
-          title: Text(title),
-          content: content,
-        ),
+        builder: (BuildContext context) => dialog(context),
       );
     } else {
-      onTap();
+      onTap(context);
     }
   }
 }
 
 List<PopupChoice> _popupChoiceList = [
-  PopupChoice('Flumemoをシェア', onTap: () {
+  PopupChoice(
+    'ノートをリセット',
+    dialog: (BuildContext context) => AlertDialog(
+      content: Text('リセットすると全てのページが削除され、元には戻せません。よろしいですか？'),
+      actions: [
+        FlatButton(
+          child: Text("キャンセル"),
+          onPressed: () => Navigator.pop(context),
+        ),
+        FlatButton(
+          child: Text("リセット"),
+          onPressed: () {
+            final NoteModel note = Provider.of<NoteModel>(context);
+            note.reset();
+            Navigator.pop(context);
+          },
+        ),
+      ],
+    ),
+  ),
+  PopupChoice('Flumemoをシェア', onTap: (BuildContext context) {
     Share.share('#flumemo https://github.com/Compeito/flumemo/releases');
   }),
 ];

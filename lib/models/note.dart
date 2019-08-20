@@ -30,6 +30,12 @@ class NoteModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void reset() {
+    pages = [Page()];
+    pageIndex = 0;
+    notifyListeners();
+  }
+
   void play() {
     isPlaying = !isPlaying;
     notifyListeners();
