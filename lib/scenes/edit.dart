@@ -163,6 +163,7 @@ class EditScene extends StatelessWidget {
                 ),
                 Container(
                   padding: EdgeInsets.all(10),
+                  width: 70,
                   child: Center(
                     child: Text(
                       _note.pageStateDisplay,
@@ -180,12 +181,6 @@ class EditScene extends StatelessWidget {
                   icon: Icon(Icons.arrow_right),
                   onPressed:
                       !_note.isPlaying ? () => _note.pushPageAndCreate() : null,
-                ),
-                FlatButton.icon(
-                  icon: Icon(Icons.edit),
-                  label: Text(_pen.isActive ? '1' : '2'),
-                  textColor: _pen.isActive ? _pen.color : _note.backgroundColor,
-                  onPressed: () => _pen.isActive = !_pen.isActive,
                 ),
               ],
             ),
