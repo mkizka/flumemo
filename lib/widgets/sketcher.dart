@@ -131,7 +131,7 @@ class Painter extends CustomPainter {
         scaledPoints.add(scaledPoint);
       }
 
-      Paint scaledPaint = line.getPaint()..strokeWidth *= sizeRate;
+      PaintInk scaledPaint = line.paint.copy()..strokeWidth *= sizeRate;
 
       canvas.drawPoints(PointMode.polygon, scaledPoints, scaledPaint);
     });

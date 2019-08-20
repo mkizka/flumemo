@@ -32,10 +32,32 @@ class PenModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Paint get paint {
-    return Paint()
-      ..color = color
-      ..strokeCap = StrokeCap.round
-      ..strokeWidth = width;
+  PaintInk get paint {
+    return PaintInk(isTransparent: !isActive).copy(
+      newColor: color,
+      newCap: StrokeCap.round,
+      newWidth: width,
+    );
+  }
+}
+
+class PaintInk extends Paint {
+  final bool isTransparent;
+
+  PaintInk({this.isTransparent = false});
+
+  factory PaintInk.from(PaintInk other) {
+    return PaintInk(isTransparent: other.isTransparent).copy(
+      newColor: other.color,
+      newCap: other.strokeCap,
+      newWidth: other.strokeWidth,
+    );
+  }
+
+  Paint copy({Color newColor, StrokeCap newCap, double newWidth}) {
+    return PaintInk()
+      ..color = newColor ?? color
+      ..strokeCap = newCap ?? strokeCap
+      ..strokeWidth = newWidth ?? strokeWidth;
   }
 }

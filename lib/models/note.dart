@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 
+import './pen.dart';
+
 List<Color> backgroundColorList = [
   Colors.lightBlueAccent,
   Colors.lightGreenAccent,
@@ -128,12 +130,12 @@ class Page {
       ..redoableLines = other.redoableLines;
   }
 
-  void addLine(Paint paint, Offset point) {
+  void addLine(PaintInk paint, Offset point) {
     lines.add(Line(paint)..points.add(point));
     redoableLines.clear();
   }
 
-  void updateLine(Paint paint, Offset point) {
+  void updateLine(PaintInk paint, Offset point) {
     if (lines.isEmpty || lines.last.isFinished) {
       addLine(paint, point);
     } else {
@@ -165,7 +167,7 @@ class Page {
 
 class Line {
   List<Offset> points = [];
-  Paint paint;
+  PaintInk paint;
   List<Color> _onionColors = [
     Colors.grey,
     Colors.grey.shade400,
@@ -175,14 +177,7 @@ class Line {
   Line(this.paint);
 
   factory Line.from(Line other) {
-    return Line(other.getPaint())..points = other.points;
-  }
-
-  Paint getPaint() {
-    return Paint()
-      ..strokeWidth = paint.strokeWidth
-      ..strokeCap = paint.strokeCap
-      ..color = paint.color;
+    return Line(other.paint.copy())..points = other.points;
   }
 
   bool get isFinished => points.isNotEmpty && points.last == null;
@@ -193,11 +188,11 @@ class Line {
     return result;
   }
 
-  Paint getOnionPaint(int onionIndex) {
-    int index = -(onionIndex + 1);
-    return Paint()
-      ..strokeWidth = paint.strokeWidth
-      ..strokeCap = paint.strokeCap
-      ..color = _onionColors[index];
+  PaintInk getOnionPaint(int onionIndex) {
+    Color color = _onionColors[-(onionIndex + 1)];
+    if (paint.isTransparent) {
+      color = paint.color;
+    }
+    return PaintInk.from(paint).copy(newColor: color);
   }
 }
