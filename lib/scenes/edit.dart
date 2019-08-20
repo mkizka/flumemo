@@ -42,9 +42,9 @@ class EditScene extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final NoteModel _note = Provider.of<NoteModel>(context);
-    final PenModel _pen = Provider.of<PenModel>(context);
-    BuildContext _scaffoldContext;
+    final NoteModel note = Provider.of<NoteModel>(context);
+    final PenModel pen = Provider.of<PenModel>(context);
+    BuildContext scaffoldContext;
 
     return SafeArea(
       child: Scaffold(
@@ -65,7 +65,7 @@ class EditScene extends StatelessWidget {
             ),
             IconButton(
               icon: Icon(Icons.layers),
-              onPressed: !_note.isPlaying
+              onPressed: !note.isPlaying
                   ? () {
                       showDialog(
                         context: context,
@@ -91,7 +91,7 @@ class EditScene extends StatelessWidget {
             ),
             IconButton(
               icon: Icon(Icons.file_upload),
-              onPressed: !_note.isPlaying
+              onPressed: !note.isPlaying
                   ? () async {
                       var result = await showDialog(
                         context: context,
@@ -101,7 +101,7 @@ class EditScene extends StatelessWidget {
                         ),
                       );
                       if (result != null) {
-                        Scaffold.of(_scaffoldContext).showSnackBar(
+                        Scaffold.of(scaffoldContext).showSnackBar(
                           SnackBar(
                             content: Text(result.toString()),
                           ),
@@ -134,31 +134,31 @@ class EditScene extends StatelessWidget {
                 IconButton(
                   icon: Icon(Icons.undo),
                   onPressed:
-                      !_note.isPlaying && _note.currentPage.lines.isNotEmpty
+                      !note.isPlaying && note.currentPage.lines.isNotEmpty
                           ? () {
-                              _note.currentPage.undo();
-                              _note.notifyListeners();
+                              note.currentPage.undo();
+                              note.notifyListeners();
                             }
                           : null,
                 ),
                 IconButton(
                   icon: Icon(Icons.redo),
-                  onPressed: !_note.isPlaying &&
-                          _note.currentPage.redoableLines.isNotEmpty
+                  onPressed: !note.isPlaying &&
+                          note.currentPage.redoableLines.isNotEmpty
                       ? () {
-                          _note.currentPage.redo();
-                          _note.notifyListeners();
+                          note.currentPage.redo();
+                          note.notifyListeners();
                         }
                       : null,
                 ),
                 IconButton(
-                  icon: Icon(_note.isPlaying ? Icons.stop : Icons.play_arrow),
+                  icon: Icon(note.isPlaying ? Icons.stop : Icons.play_arrow),
                   onPressed: () {
                     // 再生時には何度も再描画されるので範囲をSketcher()に限定するため
-                    final NoteModel note = Provider.of<NoteModel>(
+                    final NoteModel sketcherNote = Provider.of<NoteModel>(
                       _sketcherKey.currentContext,
                     );
-                    note.play();
+                    sketcherNote.play();
                   },
                 ),
                 Container(
@@ -166,7 +166,7 @@ class EditScene extends StatelessWidget {
                   width: 70,
                   child: Center(
                     child: Text(
-                      _note.pageStateDisplay,
+                      note.pageStateDisplay,
                       style: TextStyle(
                         fontSize: 16,
                       ),
@@ -175,19 +175,19 @@ class EditScene extends StatelessWidget {
                 ),
                 IconButton(
                   icon: Icon(Icons.arrow_left),
-                  onPressed: !_note.isPlaying ? () => _note.backPage() : null,
+                  onPressed: !note.isPlaying ? () => note.backPage() : null,
                 ),
                 IconButton(
                   icon: Icon(Icons.arrow_right),
                   onPressed:
-                      !_note.isPlaying ? () => _note.pushPageAndCreate() : null,
+                      !note.isPlaying ? () => note.pushPageAndCreate() : null,
                 ),
               ],
             ),
           ),
         ),
         body: Builder(builder: (BuildContext context) {
-          _scaffoldContext = context;
+          scaffoldContext = context;
           return Sketcher(
             key: _sketcherKey,
           );

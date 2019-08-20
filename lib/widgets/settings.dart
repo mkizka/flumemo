@@ -10,9 +10,8 @@ import '../models/config.dart';
 class SettingsForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    ConfigModel _config = Provider.of<ConfigModel>(context);
-    PenModel _pen = Provider.of<PenModel>(context);
-    NoteModel _note = Provider.of<NoteModel>(context);
+    ConfigModel config = Provider.of<ConfigModel>(context);
+    NoteModel note = Provider.of<NoteModel>(context);
 
     return SingleChildScrollView(
       padding: EdgeInsets.only(top: 20),
@@ -21,21 +20,21 @@ class SettingsForm extends StatelessWidget {
         children: <Widget>[
           Text('透過枚数'),
           Slider(
-            label: _config.onionRange.toString(),
+            label: config.onionRange.toString(),
             min: 0,
             max: 3,
             divisions: 3,
-            value: _config.onionRange.toDouble(),
-            onChanged: (double value) => _config.onionRange = value.toInt(),
+            value: config.onionRange.toDouble(),
+            onChanged: (double value) => config.onionRange = value.toInt(),
           ),
           Text('fps'),
           Slider(
-            label: _note.fps.toString(),
+            label: note.fps.toString(),
             min: 0,
             max: 30,
             divisions: 30,
-            value: _note.fps.toDouble(),
-            onChanged: (double value) => _note.fps = value.toInt(),
+            value: note.fps.toDouble(),
+            onChanged: (double value) => note.fps = value.toInt(),
           ),
         ],
       ),

@@ -11,7 +11,7 @@ class Timeline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final NoteModel _note = Provider.of<NoteModel>(context);
+    final NoteModel note = Provider.of<NoteModel>(context);
     final Size size = MediaQuery.of(context).size;
 
     return Container(
@@ -23,20 +23,20 @@ class Timeline extends StatelessWidget {
             child: ListView.builder(
               itemBuilder: (BuildContext context, int index) {
                 return Container(
-                  color: index == _note.pageIndex
+                  color: index == note.pageIndex
                       ? Colors.black.withOpacity(0.1)
                       : Colors.white,
                   child: ListTile(
                     leading: Text((index + 1).toString()),
                     title: CustomPaint(
                       size: scaledSize(size, 0.15),
-                      painter: Painter(_note, pageIndex: index, sizeRate: 0.15),
+                      painter: Painter(note, pageIndex: index, sizeRate: 0.15),
                     ),
-                    onTap: () => _note.setPage(index),
+                    onTap: () => note.setPage(index),
                   ),
                 );
               },
-              itemCount: _note.pages.length,
+              itemCount: note.pages.length,
             ),
           ),
           Row(
@@ -44,15 +44,15 @@ class Timeline extends StatelessWidget {
             children: [
               FlatButton(
                 child: Icon(Icons.keyboard_arrow_up),
-                onPressed: _note.pageIndex > 0
-                    ? () => _note.exchangePage(_note.pageIndex, -1)
+                onPressed: note.pageIndex > 0
+                    ? () => note.exchangePage(note.pageIndex, -1)
                     : null,
               ),
-              Text(_note.pageStateDisplay),
+              Text(note.pageStateDisplay),
               FlatButton(
                 child: Icon(Icons.keyboard_arrow_down),
-                onPressed: _note.pageIndex < _note.pages.length - 1
-                    ? () => _note.exchangePage(_note.pageIndex, 1)
+                onPressed: note.pageIndex < note.pages.length - 1
+                    ? () => note.exchangePage(note.pageIndex, 1)
                     : null,
               ),
             ],
@@ -64,17 +64,17 @@ class Timeline extends StatelessWidget {
               children: [
                 FlatButton(
                   child: Text('削除'),
-                  onPressed: _note.pages.length > 1
-                      ? () => _note.deletePage(_note.pageIndex)
+                  onPressed: note.pages.length > 1
+                      ? () => note.deletePage(note.pageIndex)
                       : null,
                 ),
                 FlatButton(
                   child: Text('追加'),
-                  onPressed: () => _note.insertPage(_note.pageIndex),
+                  onPressed: () => note.insertPage(note.pageIndex),
                 ),
                 FlatButton(
                   child: Text('複製'),
-                  onPressed: () => _note.copyPage(_note.pageIndex),
+                  onPressed: () => note.copyPage(note.pageIndex),
                 ),
               ],
             ),

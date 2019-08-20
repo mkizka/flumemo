@@ -19,14 +19,14 @@ class Sketcher extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final NoteModel _note = Provider.of<NoteModel>(context);
-    final PenModel _pen = Provider.of(context);
-    final ConfigModel _config = Provider.of<ConfigModel>(context);
+    final NoteModel note = Provider.of<NoteModel>(context);
+    final PenModel pen = Provider.of(context);
+    final ConfigModel config = Provider.of<ConfigModel>(context);
 
-    _note.context = context;
+    note.context = context;
 
-    Paint paint = _pen.paint;
-    if (!_pen.isActive) paint.color = _note.backgroundColor;
+    Paint paint = pen.paint;
+    if (!pen.isActive) paint.color = note.backgroundColor;
 
     bool isInSketcher(Offset offset) {
       return 0 <= offset.dy && offset.dy <= context.size.height;
@@ -34,29 +34,29 @@ class Sketcher extends StatelessWidget {
 
     void _onDragStart(DragDownDetails details) {
       if (!isInSketcher(details.localPosition)) return;
-      _note.currentPage.addLine(paint, details.localPosition);
-      _note.notifyListeners();
+      note.currentPage.addLine(paint, details.localPosition);
+      note.notifyListeners();
     }
 
     void _onDragUpdate(DragUpdateDetails details) {
       if (!isInSketcher(details.localPosition)) return;
-      _note.currentPage.updateLine(paint, details.localPosition);
-      _note.notifyListeners();
+      note.currentPage.updateLine(paint, details.localPosition);
+      note.notifyListeners();
     }
 
     void _onDragEnd(DragEndDetails details) {
-      _note.currentPage.endLine();
-      _note.notifyListeners();
+      note.currentPage.endLine();
+      note.notifyListeners();
     }
 
     return Container(
-      color: _note.backgroundColor,
+      color: note.backgroundColor,
       child: GestureDetector(
         onPanDown: _onDragStart,
         onPanUpdate: _onDragUpdate,
         onPanEnd: _onDragEnd,
         child: CustomPaint(
-          painter: Painter(_note, onionRange: _config.onionRange),
+          painter: Painter(note, onionRange: config.onionRange),
           child: ConstrainedBox(
             constraints: BoxConstraints.expand(),
           ),

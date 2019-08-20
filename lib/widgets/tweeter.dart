@@ -12,21 +12,21 @@ class TweetForm extends StatefulWidget {
 }
 
 class _TweetFormState extends State<TweetForm> {
-  File file;
-  String text = '';
-  bool isTweeting = false;
+  File _file;
+  String _text = '';
+  bool _isTweeting = false;
 
   @override
   Widget build(BuildContext context) {
-    TwitterModel _twitter = Provider.of<TwitterModel>(context);
-    NoteModel _note = Provider.of<NoteModel>(context);
+    TwitterModel twitter = Provider.of<TwitterModel>(context);
+    NoteModel note = Provider.of<NoteModel>(context);
 
     void loginAndTweet() {
       setState(() {
-        isTweeting = true;
+        _isTweeting = true;
       });
-      _twitter.login().then((_) {
-        _twitter.tweet(text, file).then((result) {
+      twitter.login().then((_) {
+        twitter.tweet(_text, _file).then((result) {
           if (result.isSuccess) {
             Navigator.pop(context, 'ツイートしました');
           } else {
@@ -38,10 +38,10 @@ class _TweetFormState extends State<TweetForm> {
       });
     }
 
-    if (file == null) {
-      Painter(_note).writeGif().then((gif) {
+    if (_file == null) {
+      Painter(note).writeGif().then((gif) {
         setState(() {
-          file = gif;
+          _file = gif;
         });
       });
       return Container(
@@ -68,12 +68,12 @@ class _TweetFormState extends State<TweetForm> {
             decoration: InputDecoration(
               hintText: '本文',
             ),
-            onChanged: (String value) => text = value,
+            onChanged: (String value) => _text = value,
           ),
           RaisedButton(
-            child: !isTweeting
+            child: !_isTweeting
                 ? Text(
-                    _twitter.isAuthenticated ? 'ツイート' : 'ログインしてツイート',
+                    twitter.isAuthenticated ? 'ツイート' : 'ログインしてツイート',
                     style: TextStyle(color: Colors.white),
                   )
                 : CircularProgressIndicator(),
@@ -81,17 +81,17 @@ class _TweetFormState extends State<TweetForm> {
             onPressed: () => loginAndTweet(),
           ),
           Visibility(
-            visible: _twitter.isAuthenticated,
+            visible: twitter.isAuthenticated,
             child: InkWell(
               child: Text(
-                '@${_twitter.username}からログアウト',
+                '@${twitter.username}からログアウト',
                 style: TextStyle(
                   color: Colors.lightBlue,
                   fontSize: 14,
                   decoration: TextDecoration.underline,
                 ),
               ),
-              onTap: () => _twitter.logout(),
+              onTap: () => twitter.logout(),
             ),
           ),
           Container(
@@ -107,7 +107,7 @@ class _TweetFormState extends State<TweetForm> {
             padding: EdgeInsets.only(bottom: 10),
             child: Text('プレビュー'),
           ),
-          Image.file(file, height: 200)
+          Image.file(_file, height: 200)
         ],
       ),
     );
